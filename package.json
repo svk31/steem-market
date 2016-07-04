@@ -1,0 +1,33 @@
+{
+  "name": "steem-market",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon --harmony index.js",
+    "start": "node index.js",
+    "build": "webpack --config webpack.config.js --watch"
+  },
+  "author": "Sigve Kvalsvik <bitsharesblocks@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.7.1",
+    "deep-equal": "^1.0.1",
+    "express": "^4.14.0",
+    "react": "^15.2.0",
+    "react-dom": "^15.2.0",
+    "react-highcharts": "^8.4.1",
+    "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8",
+    "steem-rpc": "^0.3.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "nodemon": "^1.9.2",
+    "webpack": "^1.13.1"
+  }
+}
