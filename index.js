@@ -1,10 +1,11 @@
 var steemWS = require("steem-rpc");
 var deepEqual = require("deep-equal");
+var config = require("./config");
 
 var express = require('express');
 var app = express();
 app.use(express.static('dist'));
-var server = app.listen(3000);
+var server = app.listen(config.port);
 
 var io = require('socket.io')(server);
 var connectCounter = 0;
@@ -31,8 +32,8 @@ function startServer() {
 const options = {
     // user: "username",
     // pass: "password",
-    url: "ws://127.0.0.1:8090",
-    apis: ["database_api", "market_history_api"]
+    url: config.wsApi,
+    apis: config.apis
 };
 
 var Api = steemWS(options);
@@ -81,6 +82,6 @@ function updateState() {
             tradeHistory = response[2];
         }
 
-        setTimeout(updateState, 1500);
+        setTimeout(updateState, config.pollFrequency);
     })
 }

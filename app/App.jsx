@@ -3,6 +3,8 @@ var ReactDOM = require("react-dom");
 var socketIO = require('socket.io-client')
 import {Order} from "./marketUtils";
 import DepthChart from "./DepthChart.jsx";
+import config from "../config";
+
 
 class App extends React.Component {
 
@@ -17,7 +19,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        var socket = socketIO.connect('http://127.0.0.1:3000');
+        var socket = socketIO.connect(config.host);
 
         socket.on("connect", (res) => {
             console.log("connected", res);
