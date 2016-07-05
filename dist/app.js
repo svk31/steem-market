@@ -160,7 +160,7 @@
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            buy ? total.toFixed(4) : price
+	                            buy ? total.toFixed(2) : price
 	                        ),
 	                        React.createElement(
 	                            "td",
@@ -175,7 +175,7 @@
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            buy ? price : total.toFixed(3)
+	                            buy ? price : total.toFixed(2)
 	                        )
 	                    );
 	                }
@@ -655,7 +655,7 @@
 	                    backgroundColor: "rgba(0, 0, 0, 0.3)",
 	                    formatter: function formatter() {
 	                        var name = this.series.name.split(" ")[0];
-	                        return "<span style=\"font-size: 90%;\">Price: " + (this.x / power).toFixed(4) + " $/STEEM</span><br/><span style=\"color:" + this.series.color + "\">●</span>" + name + ": <b>" + this.y.toFixed(4) + " SBD</b>";
+	                        return "<span style=\"font-size: 90%;\">Price: " + (this.x / power).toFixed(4) + " $/STEEM</span><br/><span style=\"color:" + this.series.color + "\">●</span>" + name + ": <b>" + this.y.toFixed(4) + " SD ($)</b>";
 	                    },
 	                    style: {
 	                        color: "#FFFFFF"

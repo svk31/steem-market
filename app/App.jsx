@@ -63,10 +63,10 @@ class App extends React.Component {
                 let price = order.getPrice().toFixed(5);
             return (
                 <tr key={index + "_" + order.getPrice()}>
-                    <td style={{textAlign: "right"}}>{buy ? total.toFixed(4) : price}</td>
+                    <td style={{textAlign: "right"}}>{buy ? total.toFixed(2) : price}</td>
                     <td style={{textAlign: "right"}}>{buy ? sbd : steem}</td>
                     <td style={{textAlign: "right"}}>{buy ? steem : sbd}</td>
-                    <td style={{textAlign: "right"}}>{buy ? price : total.toFixed(3)}</td>
+                    <td style={{textAlign: "right"}}>{buy ? price : total.toFixed(2)}</td>
                 </tr>
             );
             }
