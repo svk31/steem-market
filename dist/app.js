@@ -151,7 +151,7 @@
 	            }
 	            var total = 0;
 	            return orders.map(function (order, index) {
-	                if (index < 10) {
+	                if (index < 15) {
 	                    total += order.getSBDAmount();
 	                    var sbd = order.getSBDAmount().toFixed(3);
 	                    var steem = order.getSteemAmount().toFixed(3);
@@ -193,32 +193,36 @@
 	            }
 
 	            return history.map(function (order, index) {
-	                var sbd = order.sbd / 1000;
-	                var steem = order.steem / 1000;
-	                return React.createElement(
-	                    "tr",
-	                    { key: index + "_" + order.date },
-	                    React.createElement(
-	                        "td",
-	                        { style: { textAlign: "right" } },
-	                        sbd.toFixed(2)
-	                    ),
-	                    React.createElement(
-	                        "td",
-	                        { style: { textAlign: "right" } },
-	                        steem.toFixed(2)
-	                    ),
-	                    React.createElement(
-	                        "td",
-	                        { style: { textAlign: "right" } },
-	                        (sbd / steem).toFixed(5)
-	                    ),
-	                    React.createElement(
-	                        "td",
-	                        { style: { textAlign: "right", fontSize: "90%" } },
-	                        _moment2.default.utc(order.date).local().format('MM/DD/YYYY hh:mm:ss')
-	                    )
-	                );
+	                if (index < 15) {
+	                    var sbd = order.sbd / 1000;
+	                    var steem = order.steem / 1000;
+	                    return React.createElement(
+	                        "tr",
+	                        { key: index + "_" + order.date },
+	                        React.createElement(
+	                            "td",
+	                            { style: { textAlign: "right" } },
+	                            sbd.toFixed(2)
+	                        ),
+	                        React.createElement(
+	                            "td",
+	                            { style: { textAlign: "right" } },
+	                            steem.toFixed(2)
+	                        ),
+	                        React.createElement(
+	                            "td",
+	                            { style: { textAlign: "right" } },
+	                            (sbd / steem).toFixed(5)
+	                        ),
+	                        React.createElement(
+	                            "td",
+	                            { style: { textAlign: "right", fontSize: "90%" } },
+	                            _moment2.default.utc(order.date).local().format('MM/DD/YYYY hh:mm:ss')
+	                        )
+	                    );
+	                }
+	            }).filter(function (a) {
+	                return !!a;
 	            });
 	        }
 	    }, {

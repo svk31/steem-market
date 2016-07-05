@@ -58,7 +58,7 @@ class App extends React.Component {
         }
         var total = 0;
         return orders.map((order, index) => {
-            if (index < 10) {
+            if (index < 15) {
                 total += order.getSBDAmount();
                 let sbd = order.getSBDAmount().toFixed(3);
                 let steem = order.getSteemAmount().toFixed(3);
@@ -74,7 +74,7 @@ class App extends React.Component {
             }
         }).filter(a => {
             return !!a;
-        })
+        });
     }
 
     renderHistoryRows(history, buy) {
@@ -83,17 +83,21 @@ class App extends React.Component {
         }
 
         return history.map((order, index) => {
-            let sbd = order.sbd / 1000;
-            let steem = order.steem / 1000;
-            return (
-                <tr key={index + "_" + order.date}>
-                    <td style={{textAlign: "right"}}>{(sbd).toFixed(2)}</td>
-                    <td style={{textAlign: "right"}}>{(steem).toFixed(2)}</td>
-                    <td style={{textAlign: "right"}}>{(sbd / steem).toFixed(5)}</td>
-                    <td style={{textAlign: "right", fontSize: "90%"}}>{moment.utc(order.date).local().format('MM/DD/YYYY hh:mm:ss')}</td>
-                </tr>
-            );
-        })
+            if (index < 15) {
+                let sbd = order.sbd / 1000;
+                let steem = order.steem / 1000;
+                return (
+                    <tr key={index + "_" + order.date}>
+                        <td style={{textAlign: "right"}}>{(sbd).toFixed(2)}</td>
+                        <td style={{textAlign: "right"}}>{(steem).toFixed(2)}</td>
+                        <td style={{textAlign: "right"}}>{(sbd / steem).toFixed(5)}</td>
+                        <td style={{textAlign: "right", fontSize: "90%"}}>{moment.utc(order.date).local().format('MM/DD/YYYY hh:mm:ss')}</td>
+                    </tr>
+                );
+            }
+        }).filter(a => {
+            return !!a;
+        });
     }
 
     renderBuySellHeader(buy) {
