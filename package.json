@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon --harmony index.js",
     "start": "node index.js",
-    "build": "webpack --config webpack.config.js --watch"
+    "dev": "webpack --config webpack/webpack-dev.js --watch",
+    "prebuild": "rm -rf ./dist/*",
+    "build": "webpack --config webpack/webpack-prod.js"
   },
   "author": "Sigve Kvalsvik <bitsharesblocks@gmail.com>",
   "license": "ISC",
