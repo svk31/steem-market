@@ -30,6 +30,8 @@ module.exports = function(options) {
                 screw_ie8: true
             }
         }));
+
+        plugins.push(new webpack.DefinePlugin({'process.env': {NODE_ENV: JSON.stringify('production')}}));
     }
 
     var config = {
