@@ -49,17 +49,19 @@ class App extends React.Component {
         });
     }
 
-    renderOrdersRows(orders) {
+    renderOrdersRows(orders, buy) {
         if (!orders.length) {
             return null;
         }
         return orders.map((order, index) => {
             if (index < 10) {
+                let sbd = order.getSBDAmount().toFixed(4);
+                let price = order.getPrice().toFixed(5);
             return (
                 <tr key={index + "_" + order.getPrice()}>
-                    <td style={{textAlign: "right"}}>{order.getSBDAmount().toFixed(4)}</td>
+                    <td style={{textAlign: "right"}}>{buy ? sbd : price}</td>
                     <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(4)}</td>
-                    <td style={{textAlign: "right"}}>{order.getPrice().toFixed(5)}</td>
+                    <td style={{textAlign: "right"}}>{buy ? price : sbd}</td>
                 </tr>
             );
             }
@@ -68,7 +70,7 @@ class App extends React.Component {
         })
     }
 
-    renderHistoryRows(history) {
+    renderHistoryRows(history, buy) {
         if (!history.length) {
             return null;
         }
@@ -76,31 +78,40 @@ class App extends React.Component {
         return history.sort((a, b) => {
             return new Date(b.date) - new Date(a.date);
         }).map((order, index) => {
+            let sbd = order.sbd / 1000;
+            let steem = order.steem / 1000;
             return (
                 <tr key={index + "_" + order.date}>
-                    <td style={{textAlign: "right"}}>{(order.sbd / 1000).toFixed(4)}</td>
-                    <td style={{textAlign: "right"}}>{(order.steem / 1000).toFixed(4)}</td>
+                    <td style={{textAlign: "right"}}>{(sbd).toFixed(4)}</td>
+                    <td style={{textAlign: "right"}}>{(steem).toFixed(4)}</td>
+                    <td style={{textAlign: "right"}}>{(sbd / steem).toFixed(5)}</td>
                     <td style={{textAlign: "right"}}>{order.date}</td>
                 </tr>
             );
         })
     }
 
-    render() {
-        let {asks, bids, history, ticker} = this.state;
-
-        let bidRows = this.renderOrdersRows(bids);
-        let askRows = this.renderOrdersRows(asks);
-
-        let headers = (
+    renderBuySellHeader(buy) {
+        return (
             <thead>
                 <tr>
-                    <th style={{textAlign: "right"}}>SD ($)</th>
+                    <th style={{textAlign: "right"}}>{buy ? "SD ($)" : "Price"}</th>
                     <th style={{textAlign: "right"}}>Steem</th>
-                    <th style={{textAlign: "right"}}>Price</th>
+                    <th style={{textAlign: "right"}}>{buy ? "Price" : "SD ($)"}</th>
                 </tr>
             </thead>
         );
+    }
+
+    render() {
+        let {asks, bids, history, ticker} = this.state;
+
+        let bidRows = this.renderOrdersRows(bids, true);
+        let askRows = this.renderOrdersRows(asks, false);
+
+        let bidHeader = this.renderBuySellHeader(true);
+        let askHeader = this.renderBuySellHeader(false);
+
 
         let hi
 
@@ -122,29 +133,33 @@ class App extends React.Component {
                     <DepthChart data={{asks, bids}} />
                 </div>
 
-                <div className="col-xs-6 col-lg-4">
-                <table className="table table-condensed table-striped">
-                    {headers}
-                    <tbody>
-                            {bidRows}
-                    </tbody>
-                </table>
-                </div>
-                <div className="col-xs-6 col-lg-4">
+                <div className="col-xs-6 col-lg-3">
                     <table className="table table-condensed table-striped">
-                        {headers}
+                        <caption>Buy Steem</caption>
+                        {bidHeader}
+                        <tbody>
+                                {bidRows}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="col-xs-6 col-lg-3">
+                    <table className="table table-condensed table-striped">
+                        <caption>Sell Steem</caption>
+                        {askHeader}
                         <tbody>
                                 {askRows}
                         </tbody>
                     </table>
                 </div>
-                <div className="col-xs-12 col-lg-4">
+                <div className="col-xs-12 col-lg-6">
 
                     <table className="table table-condensed table-striped">
+                        <caption>Order history</caption>
                         <thead>
                             <tr>
                                 <th style={{textAlign: "right"}}>SD ($)</th>
                                 <th style={{textAlign: "right"}}>Steem</th>
+                                <th style={{textAlign: "right"}}>Price</th>
                                 <th style={{textAlign: "right"}}>Date</th>
                             </tr>
                         </thead>

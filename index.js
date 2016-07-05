@@ -10,6 +10,7 @@ var server = app.listen(config.port);
 var io = require('socket.io')(server);
 var connectCounter = 0;
 
+console.log("*** Server listening at port:", config.port, "***");
 
 function startServer() {
     app.get('/', function (req, res) {
@@ -54,7 +55,7 @@ function updateState() {
     let startDateShort = new Date();
     let endDate = new Date();
     endDate.setDate(endDate.getDate() + 1);
-    startDateShort = new Date(startDateShort.getTime() - 120 * 50 * 1000);
+    startDateShort = new Date(startDateShort.getTime() - 100 * 50 * 1000);
 
     Promise.all([
             Api.get().database_api().exec("get_dynamic_global_properties", []),

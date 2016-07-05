@@ -138,19 +138,21 @@
 	        }
 	    }, {
 	        key: "renderOrdersRows",
-	        value: function renderOrdersRows(orders) {
+	        value: function renderOrdersRows(orders, buy) {
 	            if (!orders.length) {
 	                return null;
 	            }
 	            return orders.map(function (order, index) {
 	                if (index < 10) {
+	                    var sbd = order.getSBDAmount().toFixed(4);
+	                    var price = order.getPrice().toFixed(5);
 	                    return React.createElement(
 	                        "tr",
 	                        { key: index + "_" + order.getPrice() },
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            order.getSBDAmount().toFixed(4)
+	                            buy ? sbd : price
 	                        ),
 	                        React.createElement(
 	                            "td",
@@ -160,7 +162,7 @@
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            order.getPrice().toFixed(5)
+	                            buy ? price : sbd
 	                        )
 	                    );
 	                }
@@ -170,7 +172,7 @@
 	        }
 	    }, {
 	        key: "renderHistoryRows",
-	        value: function renderHistoryRows(history) {
+	        value: function renderHistoryRows(history, buy) {
 	            if (!history.length) {
 	                return null;
 	            }
@@ -178,18 +180,25 @@
 	            return history.sort(function (a, b) {
 	                return new Date(b.date) - new Date(a.date);
 	            }).map(function (order, index) {
+	                var sbd = order.sbd / 1000;
+	                var steem = order.steem / 1000;
 	                return React.createElement(
 	                    "tr",
 	                    { key: index + "_" + order.date },
 	                    React.createElement(
 	                        "td",
 	                        { style: { textAlign: "right" } },
-	                        (order.sbd / 1000).toFixed(4)
+	                        sbd.toFixed(4)
 	                    ),
 	                    React.createElement(
 	                        "td",
 	                        { style: { textAlign: "right" } },
-	                        (order.steem / 1000).toFixed(4)
+	                        steem.toFixed(4)
+	                    ),
+	                    React.createElement(
+	                        "td",
+	                        { style: { textAlign: "right" } },
+	                        (sbd / steem).toFixed(5)
 	                    ),
 	                    React.createElement(
 	                        "td",
@@ -198,6 +207,33 @@
 	                    )
 	                );
 	            });
+	        }
+	    }, {
+	        key: "renderBuySellHeader",
+	        value: function renderBuySellHeader(buy) {
+	            return React.createElement(
+	                "thead",
+	                null,
+	                React.createElement(
+	                    "tr",
+	                    null,
+	                    React.createElement(
+	                        "th",
+	                        { style: { textAlign: "right" } },
+	                        buy ? "SD ($)" : "Price"
+	                    ),
+	                    React.createElement(
+	                        "th",
+	                        { style: { textAlign: "right" } },
+	                        "Steem"
+	                    ),
+	                    React.createElement(
+	                        "th",
+	                        { style: { textAlign: "right" } },
+	                        buy ? "Price" : "SD ($)"
+	                    )
+	                )
+	            );
 	        }
 	    }, {
 	        key: "render",
@@ -209,32 +245,11 @@
 	            var ticker = _state.ticker;
 
 
-	            var bidRows = this.renderOrdersRows(bids);
-	            var askRows = this.renderOrdersRows(asks);
+	            var bidRows = this.renderOrdersRows(bids, true);
+	            var askRows = this.renderOrdersRows(asks, false);
 
-	            var headers = React.createElement(
-	                "thead",
-	                null,
-	                React.createElement(
-	                    "tr",
-	                    null,
-	                    React.createElement(
-	                        "th",
-	                        { style: { textAlign: "right" } },
-	                        "SD ($)"
-	                    ),
-	                    React.createElement(
-	                        "th",
-	                        { style: { textAlign: "right" } },
-	                        "Steem"
-	                    ),
-	                    React.createElement(
-	                        "th",
-	                        { style: { textAlign: "right" } },
-	                        "Price"
-	                    )
-	                )
-	            );
+	            var bidHeader = this.renderBuySellHeader(true);
+	            var askHeader = this.renderBuySellHeader(false);
 
 	            var hi = void 0;
 
@@ -303,11 +318,16 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-6 col-lg-4" },
+	                    { className: "col-xs-6 col-lg-3" },
 	                    React.createElement(
 	                        "table",
 	                        { className: "table table-condensed table-striped" },
-	                        headers,
+	                        React.createElement(
+	                            "caption",
+	                            null,
+	                            "Buy Steem"
+	                        ),
+	                        bidHeader,
 	                        React.createElement(
 	                            "tbody",
 	                            null,
@@ -317,11 +337,16 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-6 col-lg-4" },
+	                    { className: "col-xs-6 col-lg-3" },
 	                    React.createElement(
 	                        "table",
 	                        { className: "table table-condensed table-striped" },
-	                        headers,
+	                        React.createElement(
+	                            "caption",
+	                            null,
+	                            "Sell Steem"
+	                        ),
+	                        askHeader,
 	                        React.createElement(
 	                            "tbody",
 	                            null,
@@ -331,10 +356,15 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-12 col-lg-4" },
+	                    { className: "col-xs-12 col-lg-6" },
 	                    React.createElement(
 	                        "table",
 	                        { className: "table table-condensed table-striped" },
+	                        React.createElement(
+	                            "caption",
+	                            null,
+	                            "Order history"
+	                        ),
 	                        React.createElement(
 	                            "thead",
 	                            null,
@@ -350,6 +380,11 @@
 	                                    "th",
 	                                    { style: { textAlign: "right" } },
 	                                    "Steem"
+	                                ),
+	                                React.createElement(
+	                                    "th",
+	                                    { style: { textAlign: "right" } },
+	                                    "Price"
 	                                ),
 	                                React.createElement(
 	                                    "th",
@@ -29498,7 +29533,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n", ""]);
+	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n", ""]);
 
 	// exports
 
