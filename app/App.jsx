@@ -1,12 +1,20 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 var socketIO = require('socket.io-client')
-import {Order} from "./marketUtils";
+import {Order, MarketHistory} from "./marketUtils";
 import DepthChart from "./DepthChart.jsx";
+import PriceChart from "./PriceChart.jsx";
 import config from "../config";
 import moment from "moment";
+import Highcharts from "highcharts/highstock";
 
 require("./app.scss");
+
+Highcharts.setOptions({
+    global: {
+        useUTC: false
+    }
+});
 
 class App extends React.Component {
 
@@ -18,7 +26,9 @@ class App extends React.Component {
             asks: [],
             bids: [],
             history: [],
-            ticker: {}
+            ticker: {},
+            priceHistory: [],
+            priceTop: true
         };
     }
 
@@ -31,6 +41,13 @@ class App extends React.Component {
 
         socket.on('ticker', (data) => {
             this.setState({ticker: data});
+        })
+
+        socket.on('markethistory', (data) => {
+            console.log("priceHistory:", data);
+            this.setState({priceHistory: data.map(bucket => {
+                return new MarketHistory(bucket);
+            })});
         })
 
         socket.on('orderbook', (data) => {
@@ -113,8 +130,20 @@ class App extends React.Component {
         );
     }
 
+    _toggleChartPosition() {
+        this.setState({
+            priceTop: !this.state.priceTop
+        });
+    }
+
+    _toggleSideBySideCharts() {
+        this.setState({
+            sideBySide: !this.state.sideBySide
+        });
+    }
+
     render() {
-        let {asks, bids, history, ticker} = this.state;
+        let {asks, bids, history, ticker, priceHistory, priceTop} = this.state;
 
         let bidRows = this.renderOrdersRows(bids, true);
         let askRows = this.renderOrdersRows(asks, false);
@@ -130,10 +159,13 @@ class App extends React.Component {
 
         let changePercent = (100 * (parseFloat(latest) - first)) / first;
 
+        let priceChart = priceHistory.length ? <PriceChart priceHistory={priceHistory} /> : null;
+
         return (
             <div className="container">
 
                 <div className="col-xs-12">
+                    <div className="btn btn-default pull-left" onClick={this._toggleChartPosition.bind(this)}>Switch charts</div>
                     {Object.keys(ticker).length ?
                     <ul className="market-ticker">
                         <li><b>Last price</b>${latest}/STEEM (<span className={changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive"}>{changePercent.toFixed(3)}%</span>)</li>
@@ -146,7 +178,10 @@ class App extends React.Component {
                 </div>
 
                 <div className="col-xs-12">
-                    <DepthChart data={{asks, bids}} />
+
+                    {priceTop ? priceChart :
+                        <DepthChart data={{asks, bids}} />
+                    }
                 </div>
 
                 <div className="col-xs-6 col-lg-4">
@@ -158,6 +193,7 @@ class App extends React.Component {
                         </tbody>
                     </table>
                 </div>
+
                 <div className="col-xs-6 col-lg-4">
                     <table className="table table-condensed table-striped">
                         <caption className="sell">Sell Steem</caption>
@@ -183,6 +219,12 @@ class App extends React.Component {
                                 {this.renderHistoryRows(history)}
                         </tbody>
                     </table>
+                </div>
+
+                <div className="col-xs-12">
+                    {!priceTop ? priceChart :
+                        <DepthChart data={{asks, bids}} />
+                    }
                 </div>
             </div>
 

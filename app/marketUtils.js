@@ -38,6 +38,25 @@ class Price {
 
 class MarketHistory {
 
+    constructor(bucket) {
+        this.date = new Date(bucket.open + "+00:00").getTime();
+
+        this.high = (bucket.high_sbd / bucket.high_steem);
+        this.low = (bucket.low_sbd / bucket.low_steem);
+        this.open = (bucket.open_sbd / bucket.open_steem);
+        this.close = (bucket.close_sbd / bucket.close_steem);
+
+        this.steemVolume = bucket.steem_volume / precision;
+        this.sbdVolume = bucket.sbd_volume / precision;
+    }
+
+    getPriceData() {
+        return [this.date, this.open, this.high, this.low, this.close];
+    }
+
+    getVolumeData() {
+        return [this.date, this.sbdVolume];
+    }
 }
 
 module.exports = {
