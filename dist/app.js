@@ -44,9 +44,10 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
 	__webpack_require__(1);
 	__webpack_require__(2);
-
 
 /***/ },
 /* 1 */
@@ -428,53 +429,72 @@
 /* 3 */
 /***/ function(module, exports) {
 
-	let precision = 1000; // SAME FOR SBD AND STEEM
+	"use strict";
 
-	class Order {
-	    constructor(data, type) {
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var precision = 1000; // SAME FOR SBD AND STEEM
+
+	var Order = function () {
+	    function Order(data, type) {
+	        _classCallCheck(this, Order);
+
 	        this.type = type;
-	        this.price = type === "ask" ? parseFloat(data.real_price) :
-	            (1 / parseFloat(data.real_price));
+	        this.price = type === "ask" ? parseFloat(data.real_price) : 1 / parseFloat(data.real_price);
 	        this.steem = parseInt(data.steem, 10);
 	        this.sbd = parseInt(data.sbd, 10);
 	    }
 
-	    getSteemAmount() {
-	        return this.steem / precision;
-	    }
+	    _createClass(Order, [{
+	        key: "getSteemAmount",
+	        value: function getSteemAmount() {
+	            return this.steem / precision;
+	        }
+	    }, {
+	        key: "getPrice",
+	        value: function getPrice() {
+	            return this.price;
+	        }
+	    }, {
+	        key: "getSBDAmount",
+	        value: function getSBDAmount() {
+	            return this.sbd / precision;
+	        }
+	    }]);
 
-	    getPrice() {
-	        return this.price;
-	    }
+	    return Order;
+	}();
 
-	    getSBDAmount() {
-	        return this.sbd / precision;
-	    }
-	}
+	var Price = function () {
+	    function Price(ratio) {
+	        _classCallCheck(this, Price);
 
-	class Price {
-	    constructor(ratio) {
 	        this.ratio = ratio;
 	    }
 
-	    getPrice() {
+	    _createClass(Price, [{
+	        key: "getPrice",
+	        value: function getPrice() {}
+	    }, {
+	        key: "getInvertedPrice",
+	        value: function getInvertedPrice() {
+	            return 1 / this.getPrice();
+	        }
+	    }]);
 
-	    }
+	    return Price;
+	}();
 
-	    getInvertedPrice() {
-	        return 1 / this.getPrice();
-	    }
-	}
-
-	class MarketHistory {
-
-	}
-
-	module.exports = {
-	    Order,
-	    MarketHistory
+	var MarketHistory = function MarketHistory() {
+	    _classCallCheck(this, MarketHistory);
 	};
 
+	module.exports = {
+	    Order: Order,
+	    MarketHistory: MarketHistory
+	};
 
 /***/ },
 /* 4 */
@@ -5064,14 +5084,15 @@
 /* 39 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	module.exports = {
 	    port: 3000,
 	    wsApi: "ws://127.0.0.1:8090",
 	    apis: ["database_api", "market_history_api"],
 	    pollFrequency: 1500,
 	    host: "http://127.0.0.1:3000"
-	}
-
+	};
 
 /***/ },
 /* 40 */
