@@ -1,0 +1,22 @@
+body {
+    padding-top: 20px;
+}
+
+ul.market-ticker {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    b {
+        padding: 3px;     
+        background: #f8f8f8;
+        border-right: 1px solid #e6e6e6;
+        margin-right: 5px;
+    }
+    > li {
+        display: inline-block;
+        border: 1px solid #e6e6e6;
+        border-radius: 3px;
+        margin: 0 .25rem;
+        padding-right: .5rem;
+    }
+}

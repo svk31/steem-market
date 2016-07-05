@@ -84,6 +84,9 @@
 	var ReactDOM = __webpack_require__(40);
 	var socketIO = __webpack_require__(177);
 
+
+	__webpack_require__(226);
+
 	var App = function (_React$Component) {
 	    _inherits(App, _React$Component);
 
@@ -95,7 +98,9 @@
 	        _this.state = {
 	            apiReady: false,
 	            asks: [],
-	            bids: []
+	            bids: [],
+	            history: [],
+	            ticker: {}
 	        };
 	        return _this;
 	    }
@@ -111,6 +116,10 @@
 	                console.log("connected", res);
 	            });
 
+	            socket.on('ticker', function (data) {
+	                _this2.setState({ ticker: data });
+	            });
+
 	            socket.on('orderbook', function (data) {
 	                var bids = data.bids.map(function (bid) {
 	                    return new _marketUtils.Order(bid, "bid");
@@ -124,7 +133,6 @@
 	            });
 
 	            socket.on('tradehistory', function (data) {
-	                console.log("tradehistory:", data);
 	                _this2.setState({ history: data });
 	            });
 	        }
@@ -161,11 +169,44 @@
 	            });
 	        }
 	    }, {
+	        key: "renderHistoryRows",
+	        value: function renderHistoryRows(history) {
+	            if (!history.length) {
+	                return null;
+	            }
+
+	            return history.sort(function (a, b) {
+	                return new Date(b.date) - new Date(a.date);
+	            }).map(function (order, index) {
+	                return React.createElement(
+	                    "tr",
+	                    { key: index + "_" + order.date },
+	                    React.createElement(
+	                        "td",
+	                        { style: { textAlign: "right" } },
+	                        (order.sbd / 1000).toFixed(4)
+	                    ),
+	                    React.createElement(
+	                        "td",
+	                        { style: { textAlign: "right" } },
+	                        (order.steem / 1000).toFixed(4)
+	                    ),
+	                    React.createElement(
+	                        "td",
+	                        { style: { textAlign: "right" } },
+	                        order.date
+	                    )
+	                );
+	            });
+	        }
+	    }, {
 	        key: "render",
 	        value: function render() {
 	            var _state = this.state;
 	            var asks = _state.asks;
 	            var bids = _state.bids;
+	            var history = _state.history;
+	            var ticker = _state.ticker;
 
 
 	            var bidRows = this.renderOrdersRows(bids);
@@ -195,9 +236,66 @@
 	                )
 	            );
 
+	            var hi = void 0;
+
 	            return React.createElement(
 	                "div",
 	                { className: "container" },
+	                React.createElement(
+	                    "div",
+	                    { className: "col-xs-12" },
+	                    Object.keys(ticker).length ? React.createElement(
+	                        "ul",
+	                        { className: "market-ticker" },
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement(
+	                                "b",
+	                                null,
+	                                "Last price"
+	                            ),
+	                            "$",
+	                            parseFloat(ticker.latest).toFixed(5),
+	                            "/STEEM (+",
+	                            parseFloat(ticker.percent_change).toFixed(2),
+	                            "%)"
+	                        ),
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement(
+	                                "b",
+	                                null,
+	                                "24h volume"
+	                            ),
+	                            "$",
+	                            (ticker.sbd_volume / 1000).toFixed(4)
+	                        ),
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement(
+	                                "b",
+	                                null,
+	                                "Bid"
+	                            ),
+	                            "$",
+	                            parseFloat(ticker.highest_bid).toFixed(5)
+	                        ),
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement(
+	                                "b",
+	                                null,
+	                                "Ask"
+	                            ),
+	                            "$",
+	                            parseFloat(ticker.lowest_ask).toFixed(5)
+	                        )
+	                    ) : null
+	                ),
 	                React.createElement(
 	                    "div",
 	                    { className: "col-xs-12" },
@@ -205,7 +303,7 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-6" },
+	                    { className: "col-xs-6 col-lg-4" },
 	                    React.createElement(
 	                        "table",
 	                        { className: "table table-condensed table-striped" },
@@ -219,7 +317,7 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-6" },
+	                    { className: "col-xs-6 col-lg-4" },
 	                    React.createElement(
 	                        "table",
 	                        { className: "table table-condensed table-striped" },
@@ -228,6 +326,42 @@
 	                            "tbody",
 	                            null,
 	                            askRows
+	                        )
+	                    )
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { className: "col-xs-12 col-lg-4" },
+	                    React.createElement(
+	                        "table",
+	                        { className: "table table-condensed table-striped" },
+	                        React.createElement(
+	                            "thead",
+	                            null,
+	                            React.createElement(
+	                                "tr",
+	                                null,
+	                                React.createElement(
+	                                    "th",
+	                                    { style: { textAlign: "right" } },
+	                                    "SD ($)"
+	                                ),
+	                                React.createElement(
+	                                    "th",
+	                                    { style: { textAlign: "right" } },
+	                                    "Steem"
+	                                ),
+	                                React.createElement(
+	                                    "th",
+	                                    { style: { textAlign: "right" } },
+	                                    "Date"
+	                                )
+	                            )
+	                        ),
+	                        React.createElement(
+	                            "tbody",
+	                            null,
+	                            this.renderHistoryRows(this.state.history)
 	                        )
 	                    )
 	                )
@@ -650,40 +784,12 @@
 	// shim for using process in browser
 
 	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	(function () {
-	  try {
-	    cachedSetTimeout = setTimeout;
-	  } catch (e) {
-	    cachedSetTimeout = function () {
-	      throw new Error('setTimeout is not defined');
-	    }
-	  }
-	  try {
-	    cachedClearTimeout = clearTimeout;
-	  } catch (e) {
-	    cachedClearTimeout = function () {
-	      throw new Error('clearTimeout is not defined');
-	    }
-	  }
-	} ())
 	var queue = [];
 	var draining = false;
 	var currentQueue;
 	var queueIndex = -1;
 
 	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -699,7 +805,7 @@
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = cachedSetTimeout(cleanUpNextTick);
+	    var timeout = setTimeout(cleanUpNextTick);
 	    draining = true;
 
 	    var len = queue.length;
@@ -707,16 +813,14 @@
 	        currentQueue = queue;
 	        queue = [];
 	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
+	            currentQueue[queueIndex].run();
 	        }
 	        queueIndex = -1;
 	        len = queue.length;
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    cachedClearTimeout(timeout);
+	    clearTimeout(timeout);
 	}
 
 	process.nextTick = function (fun) {
@@ -728,7 +832,7 @@
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        cachedSetTimeout(drainQueue, 0);
+	        setTimeout(drainQueue, 0);
 	    }
 	};
 
@@ -761,6 +865,7 @@
 	    throw new Error('process.binding is not supported');
 	};
 
+	// TODO(shtylman)
 	process.cwd = function () { return '/' };
 	process.chdir = function (dir) {
 	    throw new Error('process.chdir is not supported');
@@ -22010,7 +22115,7 @@
 	 */
 
 	exports.Manager = __webpack_require__(191);
-	exports.Socket = __webpack_require__(217);
+	exports.Socket = __webpack_require__(218);
 
 
 /***/ },
@@ -24345,14 +24450,14 @@
 	 */
 
 	var eio = __webpack_require__(192);
-	var Socket = __webpack_require__(217);
-	var Emitter = __webpack_require__(218);
+	var Socket = __webpack_require__(218);
+	var Emitter = __webpack_require__(219);
 	var parser = __webpack_require__(183);
-	var on = __webpack_require__(220);
-	var bind = __webpack_require__(221);
+	var on = __webpack_require__(221);
+	var bind = __webpack_require__(222);
 	var debug = __webpack_require__(180)('socket.io-client:manager');
-	var indexOf = __webpack_require__(215);
-	var Backoff = __webpack_require__(223);
+	var indexOf = __webpack_require__(216);
+	var Backoff = __webpack_require__(225);
 
 	/**
 	 * IE6+ hasOwnProperty
@@ -24933,11 +25038,11 @@
 	var transports = __webpack_require__(195);
 	var Emitter = __webpack_require__(188);
 	var debug = __webpack_require__(180)('engine.io-client:socket');
-	var index = __webpack_require__(215);
+	var index = __webpack_require__(216);
 	var parser = __webpack_require__(201);
 	var parseuri = __webpack_require__(179);
-	var parsejson = __webpack_require__(216);
-	var parseqs = __webpack_require__(209);
+	var parsejson = __webpack_require__(217);
+	var parseqs = __webpack_require__(210);
 
 	/**
 	 * Module exports.
@@ -25667,8 +25772,8 @@
 
 	var XMLHttpRequest = __webpack_require__(196);
 	var XHR = __webpack_require__(198);
-	var JSONP = __webpack_require__(212);
-	var websocket = __webpack_require__(213);
+	var JSONP = __webpack_require__(213);
+	var websocket = __webpack_require__(214);
 
 	/**
 	 * Export transports.
@@ -25793,7 +25898,7 @@
 	var XMLHttpRequest = __webpack_require__(196);
 	var Polling = __webpack_require__(199);
 	var Emitter = __webpack_require__(188);
-	var inherit = __webpack_require__(210);
+	var inherit = __webpack_require__(211);
 	var debug = __webpack_require__(180)('engine.io-client:polling-xhr');
 
 	/**
@@ -26210,10 +26315,10 @@
 	 */
 
 	var Transport = __webpack_require__(200);
-	var parseqs = __webpack_require__(209);
+	var parseqs = __webpack_require__(210);
 	var parser = __webpack_require__(201);
-	var inherit = __webpack_require__(210);
-	var yeast = __webpack_require__(211);
+	var inherit = __webpack_require__(211);
+	var yeast = __webpack_require__(212);
 	var debug = __webpack_require__(180)('engine.io-client:polling');
 
 	/**
@@ -26625,10 +26730,10 @@
 
 	var keys = __webpack_require__(202);
 	var hasBinary = __webpack_require__(203);
-	var sliceBuffer = __webpack_require__(204);
-	var base64encoder = __webpack_require__(205);
-	var after = __webpack_require__(206);
-	var utf8 = __webpack_require__(207);
+	var sliceBuffer = __webpack_require__(205);
+	var base64encoder = __webpack_require__(206);
+	var after = __webpack_require__(207);
+	var utf8 = __webpack_require__(208);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -26685,7 +26790,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(208);
+	var Blob = __webpack_require__(209);
 
 	/**
 	 * Encodes a packet.
@@ -27250,7 +27355,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(187);
+	var isArray = __webpack_require__(204);
 
 	/**
 	 * Module exports.
@@ -27310,6 +27415,15 @@
 /* 204 */
 /***/ function(module, exports) {
 
+	module.exports = Array.isArray || function (arr) {
+	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 205 */
+/***/ function(module, exports) {
+
 	/**
 	 * An abstraction for slicing an arraybuffer even when
 	 * ArrayBuffer.prototype.slice is not supported
@@ -27342,7 +27456,7 @@
 
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports) {
 
 	/*
@@ -27407,7 +27521,7 @@
 
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports) {
 
 	module.exports = after
@@ -27441,7 +27555,7 @@
 
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/utf8js v2.0.0 by @mathias */
@@ -27690,7 +27804,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(185)(module), (function() { return this; }())))
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -27793,7 +27907,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports) {
 
 	/**
@@ -27836,7 +27950,7 @@
 
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports) {
 
 	
@@ -27848,7 +27962,7 @@
 	};
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -27922,7 +28036,7 @@
 
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -27931,7 +28045,7 @@
 	 */
 
 	var Polling = __webpack_require__(199);
-	var inherit = __webpack_require__(210);
+	var inherit = __webpack_require__(211);
 
 	/**
 	 * Module exports.
@@ -28167,7 +28281,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -28176,9 +28290,9 @@
 
 	var Transport = __webpack_require__(200);
 	var parser = __webpack_require__(201);
-	var parseqs = __webpack_require__(209);
-	var inherit = __webpack_require__(210);
-	var yeast = __webpack_require__(211);
+	var parseqs = __webpack_require__(210);
+	var inherit = __webpack_require__(211);
+	var yeast = __webpack_require__(212);
 	var debug = __webpack_require__(180)('engine.io-client:websocket');
 	var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 
@@ -28191,7 +28305,7 @@
 	var WebSocket = BrowserWebSocket;
 	if (!WebSocket && typeof window === 'undefined') {
 	  try {
-	    WebSocket = __webpack_require__(214);
+	    WebSocket = __webpack_require__(215);
 	  } catch (e) { }
 	}
 
@@ -28462,13 +28576,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports) {
 
 	
@@ -28483,7 +28597,7 @@
 	};
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -28521,7 +28635,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -28530,12 +28644,12 @@
 	 */
 
 	var parser = __webpack_require__(183);
-	var Emitter = __webpack_require__(218);
-	var toArray = __webpack_require__(219);
-	var on = __webpack_require__(220);
-	var bind = __webpack_require__(221);
+	var Emitter = __webpack_require__(219);
+	var toArray = __webpack_require__(220);
+	var on = __webpack_require__(221);
+	var bind = __webpack_require__(222);
 	var debug = __webpack_require__(180)('socket.io-client:socket');
-	var hasBin = __webpack_require__(222);
+	var hasBin = __webpack_require__(223);
 
 	/**
 	 * Module exports.
@@ -28939,7 +29053,7 @@
 
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports) {
 
 	
@@ -29106,7 +29220,7 @@
 
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports) {
 
 	module.exports = toArray
@@ -29125,7 +29239,7 @@
 
 
 /***/ },
-/* 220 */
+/* 221 */
 /***/ function(module, exports) {
 
 	
@@ -29155,7 +29269,7 @@
 
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports) {
 
 	/**
@@ -29184,7 +29298,7 @@
 
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -29192,7 +29306,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(187);
+	var isArray = __webpack_require__(224);
 
 	/**
 	 * Module exports.
@@ -29250,7 +29364,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 223 */
+/* 224 */
+/***/ function(module, exports) {
+
+	module.exports = Array.isArray || function (arr) {
+	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 225 */
 /***/ function(module, exports) {
 
 	
@@ -29338,6 +29461,354 @@
 	  this.jitter = jitter;
 	};
 
+
+
+/***/ },
+/* 226 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(227);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(229)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/postcss-loader/index.js!./../node_modules/sass-loader/index.js?outputStyle=expanded!./app.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/postcss-loader/index.js!./../node_modules/sass-loader/index.js?outputStyle=expanded!./app.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 227 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(228)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 228 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 229 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
 
 
 /***/ }

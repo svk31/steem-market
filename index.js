@@ -1,11 +1,10 @@
 var steemWS = require("steem-rpc");
 var deepEqual = require("deep-equal");
-var config = require("./config");
 
 var express = require('express');
 var app = express();
 app.use(express.static('dist'));
-var server = app.listen(config.port);
+var server = app.listen(3000);
 
 var io = require('socket.io')(server);
 var connectCounter = 0;
@@ -20,6 +19,7 @@ function startServer() {
         console.log('user connected, total users:', connectCounter);
         socket.emit('orderbook', orderBook);
         socket.emit('tradehistory', tradeHistory);
+        socket.emit('ticker', ticker);
 
         socket.on("disconnect", function() {
             console.log("user dcd");
@@ -32,14 +32,15 @@ function startServer() {
 const options = {
     // user: "username",
     // pass: "password",
-    url: config.wsApi,
-    apis: config.apis
+    url: "ws://127.0.0.1:8090",
+    apis: ["database_api", "market_history_api"]
 };
 
 var Api = steemWS(options);
 var currentBlock;
-var orderBook;
-var tradeHistory;
+var orderBook = {bids: [], asks: []};
+var tradeHistory = [];
+var ticker = {};
 
 Api.get().initPromise.then((res) => {
     console.log("Connected:", res);
@@ -51,7 +52,7 @@ function updateState() {
     let startDateShort = new Date();
     let endDate = new Date();
     endDate.setDate(endDate.getDate() + 1);
-    startDateShort = new Date(startDateShort.getTime() - 3600 * 50 * 1000);
+    startDateShort = new Date(startDateShort.getTime() - 120 * 50 * 1000);
 
     Promise.all([
             Api.get().database_api().exec("get_dynamic_global_properties", []),
@@ -60,7 +61,8 @@ function updateState() {
                startDateShort.toISOString().slice(0, -5),
                endDate.toISOString().slice(0, -5),
                100
-           ])
+           ]),
+           Api.get().market_history_api().exec("get_ticker", [])
     ])
     .then(function(response) {
         currentBlock = response[0].head_block_number;
@@ -82,6 +84,16 @@ function updateState() {
             tradeHistory = response[2];
         }
 
-        setTimeout(updateState, config.pollFrequency);
+
+        if (!deepEqual(response[3], ticker)) {
+            console.log("Ticker or volume changed at block #", currentBlock);
+            if (io && "sockets" in io) {
+                io.sockets.emit("ticker", response[3]);
+            }
+
+            ticker = response[3];
+        }
+
+        setTimeout(updateState, 1500);
     })
 }
