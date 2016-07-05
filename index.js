@@ -34,8 +34,8 @@ function startServer() {
 const options = {
     // user: "username",
     // pass: "password",
-    config.wsApi,
-    config.apis
+    url: config.wsApi,
+    apis: config.apis
 };
 
 var Api = steemWS(options);
