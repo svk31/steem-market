@@ -90,7 +90,7 @@ class App extends React.Component {
                     <td style={{textAlign: "right"}}>{(sbd).toFixed(2)}</td>
                     <td style={{textAlign: "right"}}>{(steem).toFixed(2)}</td>
                     <td style={{textAlign: "right"}}>{(sbd / steem).toFixed(5)}</td>
-                    <td style={{textAlign: "right", fontSize: "90%"}}>{moment(order.date).format('MM/DD/YYYY hh:mm:ss')}</td>
+                    <td style={{textAlign: "right", fontSize: "90%"}}>{moment.utc(order.date).local().format('MM/DD/YYYY hh:mm:ss')}</td>
                 </tr>
             );
         })

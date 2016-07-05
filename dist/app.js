@@ -216,7 +216,7 @@
 	                    React.createElement(
 	                        "td",
 	                        { style: { textAlign: "right", fontSize: "90%" } },
-	                        (0, _moment2.default)(order.date).format('MM/DD/YYYY hh:mm:ss')
+	                        _moment2.default.utc(order.date).local().format('MM/DD/YYYY hh:mm:ss')
 	                    )
 	                );
 	            });
