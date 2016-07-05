@@ -115,7 +115,7 @@ export default class DepthChart extends React.Component {
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 formatter: function() {
                     let name = this.series.name.split(" ")[0];
-                    return `<span style="font-size: 90%;">${(this.x / power).toFixed(4)} $/STEEM</span><br/><span style="color:${this.series.color}">\u25CF</span>${name}: <b>${this.y.toFixed(4)} SBD</b>`;
+                    return `<span style="font-size: 90%;">Price: ${(this.x / power).toFixed(4)} $/STEEM</span><br/><span style="color:${this.series.color}">\u25CF</span>${name}: <b>${this.y.toFixed(4)} SBD</b>`;
                 },
                 style: {
                     color: "#FFFFFF"

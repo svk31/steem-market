@@ -4,6 +4,7 @@ var socketIO = require('socket.io-client')
 import {Order} from "./marketUtils";
 import DepthChart from "./DepthChart.jsx";
 import config from "../config";
+import moment from "moment";
 
 require("./app.scss");
 
@@ -53,15 +54,19 @@ class App extends React.Component {
         if (!orders.length) {
             return null;
         }
+        var total = 0;
         return orders.map((order, index) => {
             if (index < 10) {
-                let sbd = order.getSBDAmount().toFixed(4);
+                total += order.getSBDAmount();
+                let sbd = order.getSBDAmount().toFixed(3);
+                let steem = order.getSteemAmount().toFixed(3);
                 let price = order.getPrice().toFixed(5);
             return (
                 <tr key={index + "_" + order.getPrice()}>
-                    <td style={{textAlign: "right"}}>{buy ? sbd : price}</td>
-                    <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(4)}</td>
-                    <td style={{textAlign: "right"}}>{buy ? price : sbd}</td>
+                    <td style={{textAlign: "right"}}>{buy ? total.toFixed(4) : price}</td>
+                    <td style={{textAlign: "right"}}>{buy ? sbd : steem}</td>
+                    <td style={{textAlign: "right"}}>{buy ? steem : sbd}</td>
+                    <td style={{textAlign: "right"}}>{buy ? price : total.toFixed(3)}</td>
                 </tr>
             );
             }
@@ -76,16 +81,16 @@ class App extends React.Component {
         }
 
         return history.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date);
+            return (b.date === a.date ? (a.sbd - b.sbd) : (new Date(b.date) - new Date(a.date)));
         }).map((order, index) => {
             let sbd = order.sbd / 1000;
             let steem = order.steem / 1000;
             return (
                 <tr key={index + "_" + order.date}>
-                    <td style={{textAlign: "right"}}>{(sbd).toFixed(4)}</td>
-                    <td style={{textAlign: "right"}}>{(steem).toFixed(4)}</td>
+                    <td style={{textAlign: "right"}}>{(sbd).toFixed(2)}</td>
+                    <td style={{textAlign: "right"}}>{(steem).toFixed(2)}</td>
                     <td style={{textAlign: "right"}}>{(sbd / steem).toFixed(5)}</td>
-                    <td style={{textAlign: "right"}}>{order.date}</td>
+                    <td style={{textAlign: "right", fontSize: "90%"}}>{moment(order.date).format('MM/DD/YYYY hh:mm:ss')}</td>
                 </tr>
             );
         })
@@ -95,9 +100,10 @@ class App extends React.Component {
         return (
             <thead>
                 <tr>
-                    <th style={{textAlign: "right"}}>{buy ? "SD ($)" : "Price"}</th>
-                    <th style={{textAlign: "right"}}>Steem</th>
-                    <th style={{textAlign: "right"}}>{buy ? "Price" : "SD ($)"}</th>
+                    <th style={{textAlign: "right"}}>{buy ? "Total SD ($)" : "Price"}</th>
+                    <th style={{textAlign: "right"}}>{buy ? "SD ($)" : "Steem"}</th>
+                    <th style={{textAlign: "right"}}>{buy ? "Steem" : "SD ($)"}</th>
+                    <th style={{textAlign: "right"}}>{buy ? "Price" : "Total SD ($)"}</th>
                 </tr>
             </thead>
         );
@@ -111,9 +117,6 @@ class App extends React.Component {
 
         let bidHeader = this.renderBuySellHeader(true);
         let askHeader = this.renderBuySellHeader(false);
-
-
-        let hi
 
         return (
             <div className="container">
@@ -133,7 +136,7 @@ class App extends React.Component {
                     <DepthChart data={{asks, bids}} />
                 </div>
 
-                <div className="col-xs-6 col-lg-3">
+                <div className="col-xs-6 col-lg-4">
                     <table className="table table-condensed table-striped">
                         <caption className="buy">Buy Steem</caption>
                         {bidHeader}
@@ -142,7 +145,7 @@ class App extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="col-xs-6 col-lg-3">
+                <div className="col-xs-6 col-lg-4">
                     <table className="table table-condensed table-striped">
                         <caption className="sell">Sell Steem</caption>
                         {askHeader}
@@ -151,7 +154,7 @@ class App extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="col-xs-12 col-lg-6">
+                <div className="col-xs-12 col-lg-4">
 
                     <table className="table table-condensed table-striped">
                         <caption>Order history</caption>
