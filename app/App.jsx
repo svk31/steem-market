@@ -135,7 +135,7 @@ class App extends React.Component {
 
                 <div className="col-xs-6 col-lg-3">
                     <table className="table table-condensed table-striped">
-                        <caption>Buy Steem</caption>
+                        <caption className="buy">Buy Steem</caption>
                         {bidHeader}
                         <tbody>
                                 {bidRows}
@@ -144,7 +144,7 @@ class App extends React.Component {
                 </div>
                 <div className="col-xs-6 col-lg-3">
                     <table className="table table-condensed table-striped">
-                        <caption>Sell Steem</caption>
+                        <caption className="sell">Sell Steem</caption>
                         {askHeader}
                         <tbody>
                                 {askRows}

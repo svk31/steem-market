@@ -324,7 +324,7 @@
 	                        { className: "table table-condensed table-striped" },
 	                        React.createElement(
 	                            "caption",
-	                            null,
+	                            { className: "buy" },
 	                            "Buy Steem"
 	                        ),
 	                        bidHeader,
@@ -343,7 +343,7 @@
 	                        { className: "table table-condensed table-striped" },
 	                        React.createElement(
 	                            "caption",
-	                            null,
+	                            { className: "sell" },
 	                            "Sell Steem"
 	                        ),
 	                        askHeader,
@@ -620,7 +620,7 @@
 	                    backgroundColor: "rgba(0, 0, 0, 0.3)",
 	                    formatter: function formatter() {
 	                        var name = this.series.name.split(" ")[0];
-	                        return "<span style=\"font-size: 90%;\">" + (this.x / power).toFixed(4) + " $/STEEM</span><br/><span style=\"color:" + this.series.color + "\">●</span>" + name + ": <b>" + this.y + " SBD</b>";
+	                        return "<span style=\"font-size: 90%;\">" + (this.x / power).toFixed(4) + " $/STEEM</span><br/><span style=\"color:" + this.series.color + "\">●</span>" + name + ": <b>" + this.y.toFixed(4) + " SBD</b>";
 	                    },
 	                    style: {
 	                        color: "#FFFFFF"
@@ -676,7 +676,8 @@
 	                    step: "right",
 	                    name: "Bid",
 	                    data: flatBids,
-	                    fillColor: "green"
+	                    fillColor: "#c2dfc9",
+	                    color: "#339349"
 	                });
 	            }
 
@@ -685,7 +686,8 @@
 	                    step: "left",
 	                    name: "Ask",
 	                    data: flatAsks,
-	                    fillColor: "red"
+	                    fillColor: "#e4bdb9",
+	                    color: "#a42015"
 	                });
 	            }
 
@@ -29533,7 +29535,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n", ""]);
+	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n\ntable caption.buy {\n  background: #c2dfc9;\n}\n\ntable caption.sell {\n  background: #e4bdb9;\n}\n", ""]);
 
 	// exports
 

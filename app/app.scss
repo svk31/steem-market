@@ -25,4 +25,12 @@ table caption {
     text-transform: uppercase;
     text-align: center;
     background: #f3f3f3;
+
+    &.buy {
+        background: #c2dfc9;
+    }
+
+    &.sell {
+        background: #e4bdb9;
+    }
 }

@@ -115,7 +115,7 @@ export default class DepthChart extends React.Component {
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 formatter: function() {
                     let name = this.series.name.split(" ")[0];
-                    return `<span style="font-size: 90%;">${(this.x / power).toFixed(4)} $/STEEM</span><br/><span style="color:${this.series.color}">\u25CF</span>${name}: <b>${this.y} SBD</b>`;
+                    return `<span style="font-size: 90%;">${(this.x / power).toFixed(4)} $/STEEM</span><br/><span style="color:${this.series.color}">\u25CF</span>${name}: <b>${this.y.toFixed(4)} SBD</b>`;
                 },
                 style: {
                     color: "#FFFFFF"
@@ -169,7 +169,8 @@ export default class DepthChart extends React.Component {
                 step: "right",
                 name: `Bid`,
                 data: flatBids,
-                fillColor: "green"
+                fillColor: "#c2dfc9",
+                color: "#339349"
             });
         }
 
@@ -178,7 +179,8 @@ export default class DepthChart extends React.Component {
                 step: "left",
                 name: `Ask`,
                 data: flatAsks,
-                fillColor: "red"
+                fillColor: "#e4bdb9",
+                color: "#a42015"
             });
         }
 
