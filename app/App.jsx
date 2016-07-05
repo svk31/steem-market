@@ -26,7 +26,7 @@ class App extends React.Component {
         var socket = socketIO.connect(config.host);
 
         socket.on("connect", (res) => {
-            console.log("connected", res);
+            console.log("connected");
         });
 
         socket.on('ticker', (data) => {
@@ -46,7 +46,9 @@ class App extends React.Component {
         });
 
         socket.on('tradehistory', (data) => {
-            this.setState({history: data});
+            this.setState({history: data.sort((a, b) => {
+                return (b.date === a.date ? (a.sbd - b.sbd) : (new Date(b.date) - new Date(a.date)));
+            })});
         });
     }
 
@@ -80,9 +82,7 @@ class App extends React.Component {
             return null;
         }
 
-        return history.sort((a, b) => {
-            return (b.date === a.date ? (a.sbd - b.sbd) : (new Date(b.date) - new Date(a.date)));
-        }).map((order, index) => {
+        return history.map((order, index) => {
             let sbd = order.sbd / 1000;
             let steem = order.steem / 1000;
             return (
@@ -118,16 +118,25 @@ class App extends React.Component {
         let bidHeader = this.renderBuySellHeader(true);
         let askHeader = this.renderBuySellHeader(false);
 
+        let latest = history.length ? ((history[0].sbd / history[0].steem)).toFixed(5) :
+            parseFloat(ticker.latest) !== 0 ? parseFloat(ticker.latest).toFixed(5) : "0.00000";
+
+        let first = history.length ? ((history[history.length - 1].sbd / history[history.length - 1].steem)) :
+            parseFloat(ticker.latest) !== 0 ? parseFloat(ticker.latest) : 0;
+
+        let changePercent = (100 * (parseFloat(latest) - first)) / first;
+
         return (
             <div className="container">
 
                 <div className="col-xs-12">
                     {Object.keys(ticker).length ?
                     <ul className="market-ticker">
-                        <li><b>Last price</b>${parseFloat(ticker.latest).toFixed(5)}/STEEM (+{parseFloat(ticker.percent_change).toFixed(2)}%)</li>
+                        <li><b>Last price</b>${latest}/STEEM (<span className={changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive"}>{changePercent.toFixed(3)}%</span>)</li>
                         <li><b>24h volume</b>${(ticker.sbd_volume / 1000).toFixed(4)}</li>
                         <li><b>Bid</b>${parseFloat(ticker.highest_bid).toFixed(5)}</li>
                         <li><b>Ask</b>${parseFloat(ticker.lowest_ask).toFixed(5)}</li>
+                        <li><b>Spread</b>{(100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2)}%</li>
 
                     </ul> : null}
                 </div>
@@ -167,7 +176,7 @@ class App extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                                {this.renderHistoryRows(this.state.history)}
+                                {this.renderHistoryRows(history)}
                         </tbody>
                     </table>
                 </div>

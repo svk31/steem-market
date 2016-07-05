@@ -12,6 +12,14 @@ ul.market-ticker {
         border-right: 1px solid #e6e6e6;
         margin-right: 5px;
     }
+    span.positive {
+        color: #339349;
+    }
+
+    span.negative {
+        color: #a42015;
+    }
+
     > li {
         display: inline-block;
         border: 1px solid #e6e6e6;

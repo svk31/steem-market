@@ -78,8 +78,7 @@ export default class DepthChart extends React.Component {
         if (!data.bids && !data.asks) {
             return null;
         }
-        console.log("data:", data);
-
+        
         let {flatAsks, flatBids, power} = this.flattenOrders(this.props);
 
         let config = {

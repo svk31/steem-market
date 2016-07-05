@@ -118,7 +118,7 @@
 	            var socket = socketIO.connect(_config2.default.host);
 
 	            socket.on("connect", function (res) {
-	                console.log("connected", res);
+	                console.log("connected");
 	            });
 
 	            socket.on('ticker', function (data) {
@@ -138,7 +138,9 @@
 	            });
 
 	            socket.on('tradehistory', function (data) {
-	                _this2.setState({ history: data });
+	                _this2.setState({ history: data.sort(function (a, b) {
+	                        return b.date === a.date ? a.sbd - b.sbd : new Date(b.date) - new Date(a.date);
+	                    }) });
 	            });
 	        }
 	    }, {
@@ -190,9 +192,7 @@
 	                return null;
 	            }
 
-	            return history.sort(function (a, b) {
-	                return b.date === a.date ? a.sbd - b.sbd : new Date(b.date) - new Date(a.date);
-	            }).map(function (order, index) {
+	            return history.map(function (order, index) {
 	                var sbd = order.sbd / 1000;
 	                var steem = order.steem / 1000;
 	                return React.createElement(
@@ -269,6 +269,12 @@
 	            var bidHeader = this.renderBuySellHeader(true);
 	            var askHeader = this.renderBuySellHeader(false);
 
+	            var latest = history.length ? (history[0].sbd / history[0].steem).toFixed(5) : parseFloat(ticker.latest) !== 0 ? parseFloat(ticker.latest).toFixed(5) : "0.00000";
+
+	            var first = history.length ? history[history.length - 1].sbd / history[history.length - 1].steem : parseFloat(ticker.latest) !== 0 ? parseFloat(ticker.latest) : 0;
+
+	            var changePercent = 100 * (parseFloat(latest) - first) / first;
+
 	            return React.createElement(
 	                "div",
 	                { className: "container" },
@@ -287,10 +293,15 @@
 	                                "Last price"
 	                            ),
 	                            "$",
-	                            parseFloat(ticker.latest).toFixed(5),
-	                            "/STEEM (+",
-	                            parseFloat(ticker.percent_change).toFixed(2),
-	                            "%)"
+	                            latest,
+	                            "/STEEM (",
+	                            React.createElement(
+	                                "span",
+	                                { className: changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive" },
+	                                changePercent.toFixed(3),
+	                                "%"
+	                            ),
+	                            ")"
 	                        ),
 	                        React.createElement(
 	                            "li",
@@ -324,6 +335,17 @@
 	                            ),
 	                            "$",
 	                            parseFloat(ticker.lowest_ask).toFixed(5)
+	                        ),
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement(
+	                                "b",
+	                                null,
+	                                "Spread"
+	                            ),
+	                            (100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2),
+	                            "%"
 	                        )
 	                    ) : null
 	                ),
@@ -412,7 +434,7 @@
 	                        React.createElement(
 	                            "tbody",
 	                            null,
-	                            this.renderHistoryRows(this.state.history)
+	                            this.renderHistoryRows(history)
 	                        )
 	                    )
 	                )
@@ -613,7 +635,6 @@
 	            if (!data.bids && !data.asks) {
 	                return null;
 	            }
-	            console.log("data:", data);
 
 	            var _flattenOrders2 = this.flattenOrders(this.props);
 
@@ -43603,7 +43624,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n\ntable caption.buy {\n  background: #c2dfc9;\n}\n\ntable caption.sell {\n  background: #e4bdb9;\n}\n", ""]);
+	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker span.positive {\n  color: #339349;\n}\n\nul.market-ticker span.negative {\n  color: #a42015;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n\ntable caption.buy {\n  background: #c2dfc9;\n}\n\ntable caption.sell {\n  background: #e4bdb9;\n}\n", ""]);
 
 	// exports
 
