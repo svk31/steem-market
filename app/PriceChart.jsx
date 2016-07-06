@@ -229,10 +229,10 @@ class PriceChart extends React.Component {
                         color: "#ffffff",
                         fontSize: "10px"
                     },
-                    x: -30,
+                    x: -15,
                     y: 0,
                     zIndex: 99,
-                    width: 80
+                    width: 65
                 },
                 height: "90%"
             },
