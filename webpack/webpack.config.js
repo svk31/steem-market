@@ -38,7 +38,7 @@ module.exports = function(options) {
         context: root_dir + "/app",
         entry: "./Main.js",
         output: {
-            path: root_dir + "/dist",
+            path: root_dir + "/build",
             filename: "app.js"
         },
         module: {

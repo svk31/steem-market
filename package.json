@@ -8,8 +8,9 @@
     "watch": "nodemon --harmony index.js",
     "start": "node index.js",
     "dev": "webpack --config webpack/webpack-dev.js --watch",
-    "prebuild": "rm -rf ./dist/*",
-    "build": "webpack --config webpack/webpack-prod.js"
+    "prebuild": "rm -rf ./build/*",
+    "build": "webpack --config webpack/webpack-prod.js",
+    "postbuild": "rm -rf ./dist/*; cp -r ./build/* ./dist/"
   },
   "author": "Sigve Kvalsvik <bitsharesblocks@gmail.com>",
   "license": "ISC",
