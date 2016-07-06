@@ -71,3 +71,25 @@ table.trade-history tr {
 td {
     font-size: 90%;
 }
+
+ul.pager > li {
+    cursor: pointer;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;
+}
+
+table.orderbook > tbody > tr.animate {
+    background-color: #d1d2d2;
+}
+
+tr {
+    -webkit-transition: background-color 750ms linear;
+    -moz-transition: background-color 750ms linear;
+    -o-transition: background-color 750ms linear;
+    -ms-transition: background-color 750ms linear;
+    transition: background-color 750ms linear;
+}

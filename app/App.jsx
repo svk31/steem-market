@@ -7,6 +7,7 @@ import PriceChart from "./PriceChart.jsx";
 import config from "../config";
 import moment from "moment";
 import Highcharts from "highcharts/highstock";
+import Orderbook from "./Orderbook/Orderbook.jsx";
 
 require("./app.scss");
 
@@ -53,15 +54,39 @@ class App extends React.Component {
         })
 
         socket.on('orderbook', (data) => {
+            console.log("# of bids:", data.bids.length, "# of asks:", data.asks.length);
             let bids = data.bids.map(bid => {
                 return new Order(bid, "bid");
-            });
+            }).sort(sortByPrice.bind(this, true));
+
             let asks = data.asks.map(ask => {
                 return new Order(ask, "ask");
-            });
+            }).sort(sortByPrice.bind(this, false));
+
             this.setState({
-                bids, asks
+                bids: sumByPrice(bids), asks: sumByPrice(asks)
             });
+
+            function sortByPrice(inverse, a, b) {
+                if (inverse) {
+                    return b.price - a.price;
+                }
+                return a.price - b.price;
+            };
+
+            function sumByPrice(orders) {
+                return orders.reduce((previous, current) => {
+                    if (!previous.length) {
+                        previous.push(current);
+                    } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
+                        previous[previous.length - 1] = previous[previous.length - 1].add(current);
+                    } else {
+                        previous.push(current);
+                    }
+
+                    return previous;
+                }, [])
+            }
         });
 
         socket.on('tradehistory', (data) => {
@@ -72,44 +97,6 @@ class App extends React.Component {
             this.setState({history: history.sort((a, b) => {
                 return (b.date === a.date ? (a.getSBDAmount() - b.getSBDAmount()) : (b.date - a.date));
             })});
-        });
-    }
-
-    renderOrdersRows(orders, buy) {
-        if (!orders.length) {
-            return null;
-        }
-        let {buyIndex, sellIndex} = this.state;
-
-        var total = 0;
-        return orders.reduce((previous, current) => {
-            if (!previous.length) {
-                previous.push(current);
-            } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
-                previous[previous.length - 1] = previous[previous.length - 1].add(current);
-            } else {
-                previous.push(current);
-            }
-
-            return previous;
-        }, [])
-        .map((order, index) => {
-            if (index >= (buy ? buyIndex : sellIndex) && index < ((buy ? buyIndex : sellIndex) + 10)) {
-                total += order.getSBDAmount();
-                let sbd = order.getSBDAmount().toFixed(3);
-                let steem = order.getSteemAmount().toFixed(3);
-                let price = order.getStringPrice();
-            return (
-                <tr key={index + "_" + order.getPrice()}>
-                    <td style={{textAlign: "right"}}>{buy ? total.toFixed(2) : price}</td>
-                    <td style={{textAlign: "right"}}>{buy ? sbd : steem}</td>
-                    <td style={{textAlign: "right"}}>{buy ? steem : sbd}</td>
-                    <td style={{textAlign: "right"}}>{buy ? price : total.toFixed(2)}</td>
-                </tr>
-            );
-            }
-        }).filter(a => {
-            return !!a;
         });
     }
 
@@ -137,19 +124,6 @@ class App extends React.Component {
         });
     }
 
-    renderBuySellHeader(buy) {
-        return (
-            <thead>
-                <tr>
-                    <th style={{textAlign: "right"}}>{buy ? "Total SD ($)" : "Price"}</th>
-                    <th style={{textAlign: "right"}}>{buy ? "SD ($)" : "Steem"}</th>
-                    <th style={{textAlign: "right"}}>{buy ? "Steem" : "SD ($)"}</th>
-                    <th style={{textAlign: "right"}}>{buy ? "Price" : "Total SD ($)"}</th>
-                </tr>
-            </thead>
-        );
-    }
-
     _toggleChartPosition() {
         this.setState({
             priceTop: !this.state.priceTop
@@ -170,26 +144,9 @@ class App extends React.Component {
         });
     }
 
-    _setBuySellPage(back, type) {
-        let indexKey = type === "buy" ? "buyIndex" : "sellIndex";
-        let arrayKey = type === "buy" ? "bids" : "asks";
-        let newIndex = this.state[indexKey] + (back ? 10 : -10);
-
-        newIndex = Math.min(Math.max(0, newIndex), this.state[arrayKey].length - 10);
-        let newState = {};
-        newState[indexKey] = newIndex;
-        this.setState(newState);
-    }
-
     render() {
         let {asks, bids, history, ticker, priceHistory, priceTop,
             historyIndex, buyIndex, sellIndex} = this.state;
-
-        let bidRows = this.renderOrdersRows(bids, true);
-        let askRows = this.renderOrdersRows(asks, false);
-
-        let bidHeader = this.renderBuySellHeader(true);
-        let askHeader = this.renderBuySellHeader(false);
 
         let latest = parseFloat(ticker.latest).toFixed(6);
 
@@ -221,52 +178,13 @@ class App extends React.Component {
                 </div>
 
                 <div className="col-xs-6 col-lg-4">
-                    <table className="table table-condensed table-striped buy">
-                        <caption>Buy Steem</caption>
-                        {bidHeader}
-                        <tbody>
-                                {bidRows}
-                        </tbody>
-                    </table>
-                    <nav>
-                      <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
-                        <li className={"previous" + (buyIndex === 0 ? " disabled" : "")}>
-                            <a onClick={this._setBuySellPage.bind(this, false, "buy")} aria-label="Previous">
-                                <span aria-hidden="true">&larr; Higher</span>
-                            </a>
-                        </li>
-                        <li className={"next" + (buyIndex >= (bids.length - 10) ? " disabled" : "")}>
-                            <a onClick={this._setBuySellPage.bind(this, true, "buy")} aria-label="Previous">
-                                <span aria-hidden="true">Lower &rarr;</span>
-                            </a>
-                        </li>
-                      </ul>
-                    </nav>
+                    <Orderbook orders={bids} buy />
                 </div>
 
                 <div className="col-xs-6 col-lg-4">
-                    <table className="table table-condensed table-striped sell">
-                        <caption>Sell Steem</caption>
-                        {askHeader}
-                        <tbody>
-                                {askRows}
-                        </tbody>
-                    </table>
-                    <nav>
-                      <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
-                        <li className={"previous" + (sellIndex === 0 ? " disabled" : "")}>
-                            <a onClick={this._setBuySellPage.bind(this, false, "sell")} aria-label="Previous">
-                                <span aria-hidden="true">&larr; Lower</span>
-                            </a>
-                        </li>
-                        <li className={"next" + (sellIndex >= (asks.length - 10) ? " disabled" : "")}>
-                            <a onClick={this._setBuySellPage.bind(this, true, "sell")} aria-label="Previous">
-                                <span aria-hidden="true">Higher &rarr;</span>
-                            </a>
-                        </li>
-                      </ul>
-                    </nav>
+                    <Orderbook orders={asks} sell />
                 </div>
+
                 <div className="col-xs-12 col-lg-4">
 
                     <table className="table table-condensed trade-history">

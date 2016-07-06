@@ -33,6 +33,14 @@ class Order {
             sbd: this.sbd + order.sbd
         }, this.type);
     }
+
+    equals(order) {
+        return (
+            this.sbd === order.sbd &&
+            this.steem === order.steem &&
+            this.price === order.price
+        );
+    }
 }
 
 // class Price {
