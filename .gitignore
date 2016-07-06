@@ -1,4 +1,5 @@
 node_modules
 config.js
 build
+dist
 npm-debug.log

@@ -30193,9 +30193,9 @@
 	        _classCallCheck(this, TradeHistory);
 
 	        this.date = new Date(fill.date);
-	        this.type = fill.current_pays.indexOf("SBD") !== -1 ? "sell" : "buy";
+	        this.type = fill.current_pays.indexOf("SBD") !== -1 ? "buy" : "sell";
 
-	        if (this.type === "sell") {
+	        if (this.type === "buy") {
 	            this.sbd = parseFloat(fill.current_pays.split(" SBD")[0]);
 	            this.steem = parseFloat(fill.open_pays.split(" STEEM")[0]);
 	        } else {
