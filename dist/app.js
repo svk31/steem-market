@@ -28915,12 +28915,12 @@
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            order.getSteemAmount().toFixed(2)
+	                            order.getSteemAmount().toFixed(3)
 	                        ),
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            order.getSBDAmount().toFixed(2)
+	                            order.getSBDAmount().toFixed(3)
 	                        )
 	                    );
 	                }

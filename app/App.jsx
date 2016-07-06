@@ -127,8 +127,8 @@ class App extends React.Component {
                     <tr key={index + "_" + order.date} className={order.type === "buy" ? "buy" : "sell"}>
                         <td style={{textAlign: "right"}}>{moment.utc(order.date).local().format('MM/DD/YYYY HH:mm:ss')}</td>
                         <td style={{textAlign: "right"}}>{order.getStringPrice()}</td>
-                        <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(2)}</td>
-                        <td style={{textAlign: "right"}}>{order.getSBDAmount().toFixed(2)}</td>
+                        <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(3)}</td>
+                        <td style={{textAlign: "right"}}>{order.getSBDAmount().toFixed(3)}</td>
                     </tr>
                 );
             }
