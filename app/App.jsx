@@ -1,7 +1,7 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 var socketIO = require('socket.io-client')
-import {Order, MarketHistory} from "./marketUtils";
+import {Order, MarketHistory, TradeHistory} from "./marketUtils";
 import DepthChart from "./DepthChart.jsx";
 import PriceChart from "./PriceChart.jsx";
 import config from "../config";
@@ -28,7 +28,8 @@ class App extends React.Component {
             history: [],
             ticker: {},
             priceHistory: [],
-            priceTop: true
+            priceTop: true,
+            historyIndex: 0
         };
     }
 
@@ -40,11 +41,11 @@ class App extends React.Component {
         });
 
         socket.on('ticker', (data) => {
+            console.log("ticker:", data);
             this.setState({ticker: data});
         })
 
         socket.on('markethistory', (data) => {
-            console.log("priceHistory:", data);
             this.setState({priceHistory: data.map(bucket => {
                 return new MarketHistory(bucket);
             })});
@@ -63,8 +64,14 @@ class App extends React.Component {
         });
 
         socket.on('tradehistory', (data) => {
-            this.setState({history: data.sort((a, b) => {
-                return (b.date === a.date ? (a.sbd - b.sbd) : (new Date(b.date) - new Date(a.date)));
+            console.log("history:", data.length);
+
+            let history =  data.map(fill => {
+                return new TradeHistory(fill);
+            })
+
+            this.setState({history: history.sort((a, b) => {
+                return (b.date === a.date ? (a.getSBDAmount() - b.getSBDAmount()) : (b.date - a.date));
             })});
         });
     }
@@ -75,7 +82,7 @@ class App extends React.Component {
         }
         var total = 0;
         return orders.map((order, index) => {
-            if (index < 15) {
+            if (index < 10) {
                 total += order.getSBDAmount();
                 let sbd = order.getSBDAmount().toFixed(3);
                 let steem = order.getSteemAmount().toFixed(3);
@@ -99,16 +106,17 @@ class App extends React.Component {
             return null;
         }
 
+        let {historyIndex} = this.state;
+
         return history.map((order, index) => {
-            if (index < 15) {
-                let sbd = order.sbd / 1000;
-                let steem = order.steem / 1000;
+            if (index >= historyIndex && index < (historyIndex + 10)) {
+
                 return (
-                    <tr key={index + "_" + order.date}>
-                        <td style={{textAlign: "right"}}>{(sbd).toFixed(2)}</td>
-                        <td style={{textAlign: "right"}}>{(steem).toFixed(2)}</td>
-                        <td style={{textAlign: "right"}}>{(sbd / steem).toFixed(5)}</td>
+                    <tr key={index + "_" + order.date} className={order.type === "buy" ? "buy" : "sell"}>
                         <td style={{textAlign: "right", fontSize: "90%"}}>{moment.utc(order.date).local().format('MM/DD/YYYY HH:mm:ss')}</td>
+                        <td style={{textAlign: "right"}}>{order.getPrice().toFixed(5)}</td>
+                        <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(2)}</td>
+                        <td style={{textAlign: "right"}}>{order.getSBDAmount().toFixed(2)}</td>
                     </tr>
                 );
             }
@@ -142,8 +150,17 @@ class App extends React.Component {
         });
     }
 
+    _setHistoryPage(back) {
+        let newIndex = this.state.historyIndex + (back ? 10 : -10);
+        newIndex = Math.min(Math.max(0, newIndex), this.state.history.length - 10);
+        this.setState({
+            historyIndex: newIndex
+        });
+    }
+
     render() {
-        let {asks, bids, history, ticker, priceHistory, priceTop} = this.state;
+        let {asks, bids, history, ticker, priceHistory, priceTop,
+            historyIndex} = this.state;
 
         let bidRows = this.renderOrdersRows(bids, true);
         let askRows = this.renderOrdersRows(asks, false);
@@ -151,13 +168,9 @@ class App extends React.Component {
         let bidHeader = this.renderBuySellHeader(true);
         let askHeader = this.renderBuySellHeader(false);
 
-        let latest = history.length ? ((history[0].sbd / history[0].steem)).toFixed(5) :
-            parseFloat(ticker.latest) !== 0 ? parseFloat(ticker.latest).toFixed(5) : "0.00000";
+        let latest = parseFloat(ticker.latest).toFixed(5);
 
-        let first = history.length ? ((history[history.length - 1].sbd / history[history.length - 1].steem)) :
-            parseFloat(ticker.latest) !== 0 ? parseFloat(ticker.latest) : 0;
-
-        let changePercent = (100 * (parseFloat(latest) - first)) / first;
+        let changePercent = parseFloat(ticker.percent_change);
 
         let priceChart = priceHistory.length ? <PriceChart priceHistory={priceHistory} /> : null;
 
@@ -205,20 +218,35 @@ class App extends React.Component {
                 </div>
                 <div className="col-xs-12 col-lg-4">
 
-                    <table className="table table-condensed table-striped">
+                    <table className="table table-condensed">
                         <caption>Order history</caption>
                         <thead>
                             <tr>
-                                <th style={{textAlign: "right"}}>SD ($)</th>
-                                <th style={{textAlign: "right"}}>Steem</th>
+                                <th style={{textAlign: "center"}}>Date</th>
                                 <th style={{textAlign: "right"}}>Price</th>
-                                <th style={{textAlign: "right"}}>Date</th>
+                                <th style={{textAlign: "right"}}>Steem</th>
+                                <th style={{textAlign: "right"}}>SD ($)</th>
                             </tr>
                         </thead>
                         <tbody>
                                 {this.renderHistoryRows(history)}
                         </tbody>
                     </table>
+
+                    <nav>
+                      <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
+                        <li className={"previous" + (historyIndex === 0 ? " disabled" : "")}>
+                            <a onClick={this._setHistoryPage.bind(this, false)} aria-label="Previous">
+                                <span aria-hidden="true">&larr; Newer</span>
+                            </a>
+                        </li>
+                        <li className={"next" + (historyIndex >= (history.length - 10) ? " disabled" : "")}>
+                            <a onClick={this._setHistoryPage.bind(this, true)} aria-label="Previous">
+                                <span aria-hidden="true">Older &rarr;</span>
+                            </a>
+                        </li>
+                      </ul>
+                    </nav>
                 </div>
 
                 <div className="col-xs-12">

@@ -11,13 +11,13 @@ module.exports = function (Api) {
         getTradeHistory: function() {
             let startDateShort = new Date();
             let endDate = new Date();
-            endDate.setDate(endDate.getDate() + 1);
-            startDateShort = new Date(startDateShort.getTime() - 100 * 50 * 1000);
+            endDate.setDate(endDate.getDate());
+            startDateShort = new Date(startDateShort.getTime() - 200 * 50 * 1000);
 
             return Api.get().market_history_api().exec("get_trade_history", [
                startDateShort.toISOString().slice(0, -5),
                endDate.toISOString().slice(0, -5),
-               100
+               200
             ]);
         },
 

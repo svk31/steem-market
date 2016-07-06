@@ -43,6 +43,16 @@ table caption {
     }
 }
 
+table tr {
+    &.sell > td:nth-of-type(2) {
+            color: #c02a1d;
+    }
+
+    &.buy > td:nth-of-type(2) {
+            color: #27892f;
+    }
+
+}
 td {
     font-size: 90%;
 }

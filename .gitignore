@@ -1,3 +1,4 @@
 node_modules
 config.js
 build
+npm-debug.log

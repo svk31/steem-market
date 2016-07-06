@@ -4,7 +4,7 @@ class Order {
     constructor(data, type) {
         this.type = type;
         this.price = type === "ask" ? parseFloat(data.real_price) :
-            (1 / parseFloat(data.real_price));
+            (parseFloat(data.real_price));
         this.steem = parseInt(data.steem, 10);
         this.sbd = parseInt(data.sbd, 10);
     }
@@ -22,18 +22,47 @@ class Order {
     }
 }
 
-class Price {
-    constructor(ratio) {
-        this.ratio = ratio;
+// class Price {
+//     constructor(ratio) {
+//         this.ratio = ratio;
+//     }
+//
+//     getPrice() {
+//
+//     }
+//
+//     getInvertedPrice() {
+//         return 1 / this.getPrice();
+//     }
+// }
+
+class TradeHistory {
+
+    constructor(fill) {
+        this.date = new Date(fill.date);
+        this.type = fill.current_pays.indexOf("SBD") !== -1 ? "sell" : "buy";
+
+        if (this.type === "sell") {
+            this.sbd = parseFloat(fill.current_pays.split(" SBD")[0]);
+            this.steem = parseFloat(fill.open_pays.split(" STEEM")[0]);
+        } else {
+            this.sbd = parseFloat(fill.open_pays.split(" SBD")[0]);
+            this.steem = parseFloat(fill.current_pays.split(" STEEM")[0]);
+        }
+    }
+
+    getSteemAmount() {
+        return this.steem;
+    }
+
+    getSBDAmount() {
+        return this.sbd;
     }
 
     getPrice() {
-
+        return this.sbd / this.steem;
     }
 
-    getInvertedPrice() {
-        return 1 / this.getPrice();
-    }
 }
 
 class MarketHistory {
@@ -61,5 +90,6 @@ class MarketHistory {
 
 module.exports = {
     Order,
-    MarketHistory
+    MarketHistory,
+    TradeHistory
 };
