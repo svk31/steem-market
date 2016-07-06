@@ -29,21 +29,36 @@ ul.market-ticker {
     }
 }
 
-table caption {
-    text-transform: uppercase;
-    text-align: center;
-    background: #f3f3f3;
-
+table {
+    caption {
+        text-transform: uppercase;
+        text-align: center;
+        background: #f3f3f3;
+    }
     &.buy {
-        background: #c2dfc9;
+        tr > td:last-child {
+            font-weight: bold;
+        }
+
+        caption {
+            background: #c2dfc9;
+        }
+
     }
 
     &.sell {
-        background: #e4bdb9;
+        tr > td:first-child {
+            font-weight: bold;
+        }
+
+        caption {
+            background: #e4bdb9;
+        }
     }
+
 }
 
-table tr {
+table.trade-history tr {
     &.sell > td:nth-of-type(2) {
             color: #c02a1d;
     }

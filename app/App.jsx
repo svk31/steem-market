@@ -29,7 +29,9 @@ class App extends React.Component {
             ticker: {},
             priceHistory: [],
             priceTop: true,
-            historyIndex: 0
+            historyIndex: 0,
+            buyIndex: 0,
+            sellIndex: 0
         };
     }
 
@@ -41,7 +43,6 @@ class App extends React.Component {
         });
 
         socket.on('ticker', (data) => {
-            console.log("ticker:", data);
             this.setState({ticker: data});
         })
 
@@ -64,7 +65,6 @@ class App extends React.Component {
         });
 
         socket.on('tradehistory', (data) => {
-            console.log("history:", data.length);
 
             let history =  data.map(fill => {
                 return new TradeHistory(fill);
@@ -80,9 +80,11 @@ class App extends React.Component {
         if (!orders.length) {
             return null;
         }
+        let {buyIndex, sellIndex} = this.state;
+
         var total = 0;
         return orders.map((order, index) => {
-            if (index < 10) {
+            if (index >= (buy ? buyIndex : sellIndex) && index < ((buy ? buyIndex : sellIndex) + 10)) {
                 total += order.getSBDAmount();
                 let sbd = order.getSBDAmount().toFixed(3);
                 let steem = order.getSteemAmount().toFixed(3);
@@ -113,7 +115,7 @@ class App extends React.Component {
 
                 return (
                     <tr key={index + "_" + order.date} className={order.type === "buy" ? "buy" : "sell"}>
-                        <td style={{textAlign: "right", fontSize: "90%"}}>{moment.utc(order.date).local().format('MM/DD/YYYY HH:mm:ss')}</td>
+                        <td style={{textAlign: "right"}}>{moment.utc(order.date).local().format('MM/DD/YYYY HH:mm:ss')}</td>
                         <td style={{textAlign: "right"}}>{order.getPrice().toFixed(5)}</td>
                         <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(2)}</td>
                         <td style={{textAlign: "right"}}>{order.getSBDAmount().toFixed(2)}</td>
@@ -158,9 +160,20 @@ class App extends React.Component {
         });
     }
 
+    _setBuySellPage(back, type) {
+        let indexKey = type === "buy" ? "buyIndex" : "sellIndex";
+        let arrayKey = type === "buy" ? "bids" : "asks";
+        let newIndex = this.state[indexKey] + (back ? 10 : -10);
+
+        newIndex = Math.min(Math.max(0, newIndex), this.state[arrayKey].length - 10);
+        let newState = {};
+        newState[indexKey] = newIndex;
+        this.setState(newState);
+    }
+
     render() {
         let {asks, bids, history, ticker, priceHistory, priceTop,
-            historyIndex} = this.state;
+            historyIndex, buyIndex, sellIndex} = this.state;
 
         let bidRows = this.renderOrdersRows(bids, true);
         let askRows = this.renderOrdersRows(asks, false);
@@ -198,27 +211,55 @@ class App extends React.Component {
                 </div>
 
                 <div className="col-xs-6 col-lg-4">
-                    <table className="table table-condensed table-striped">
-                        <caption className="buy">Buy Steem</caption>
+                    <table className="table table-condensed table-striped buy">
+                        <caption>Buy Steem</caption>
                         {bidHeader}
                         <tbody>
                                 {bidRows}
                         </tbody>
                     </table>
+                    <nav>
+                      <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
+                        <li className={"previous" + (buyIndex === 0 ? " disabled" : "")}>
+                            <a onClick={this._setBuySellPage.bind(this, false, "buy")} aria-label="Previous">
+                                <span aria-hidden="true">&larr; Higher</span>
+                            </a>
+                        </li>
+                        <li className={"next" + (buyIndex >= (bids.length - 10) ? " disabled" : "")}>
+                            <a onClick={this._setBuySellPage.bind(this, true, "buy")} aria-label="Previous">
+                                <span aria-hidden="true">Lower &rarr;</span>
+                            </a>
+                        </li>
+                      </ul>
+                    </nav>
                 </div>
 
                 <div className="col-xs-6 col-lg-4">
-                    <table className="table table-condensed table-striped">
-                        <caption className="sell">Sell Steem</caption>
+                    <table className="table table-condensed table-striped sell">
+                        <caption>Sell Steem</caption>
                         {askHeader}
                         <tbody>
                                 {askRows}
                         </tbody>
                     </table>
+                    <nav>
+                      <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
+                        <li className={"previous" + (sellIndex === 0 ? " disabled" : "")}>
+                            <a onClick={this._setBuySellPage.bind(this, false, "sell")} aria-label="Previous">
+                                <span aria-hidden="true">&larr; Lower</span>
+                            </a>
+                        </li>
+                        <li className={"next" + (sellIndex >= (asks.length - 10) ? " disabled" : "")}>
+                            <a onClick={this._setBuySellPage.bind(this, true, "sell")} aria-label="Previous">
+                                <span aria-hidden="true">Higher &rarr;</span>
+                            </a>
+                        </li>
+                      </ul>
+                    </nav>
                 </div>
                 <div className="col-xs-12 col-lg-4">
 
-                    <table className="table table-condensed">
+                    <table className="table table-condensed trade-history">
                         <caption>Order history</caption>
                         <thead>
                             <tr>
@@ -249,7 +290,7 @@ class App extends React.Component {
                     </nav>
                 </div>
 
-                <div className="col-xs-12">
+                <div className="col-xs-12" style={{paddingTop: 20, paddingBottom: 20}}>
                     {!priceTop ? priceChart :
                         <DepthChart data={{asks, bids}} />
                     }

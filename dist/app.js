@@ -28779,7 +28779,9 @@
 	            ticker: {},
 	            priceHistory: [],
 	            priceTop: true,
-	            historyIndex: 0
+	            historyIndex: 0,
+	            buyIndex: 0,
+	            sellIndex: 0
 	        };
 	        return _this;
 	    }
@@ -28796,7 +28798,6 @@
 	            });
 
 	            socket.on('ticker', function (data) {
-	                console.log("ticker:", data);
 	                _this2.setState({ ticker: data });
 	            });
 
@@ -28819,7 +28820,6 @@
 	            });
 
 	            socket.on('tradehistory', function (data) {
-	                console.log("history:", data.length);
 
 	                var history = data.map(function (fill) {
 	                    return new _marketUtils.TradeHistory(fill);
@@ -28836,9 +28836,14 @@
 	            if (!orders.length) {
 	                return null;
 	            }
+	            var _state = this.state;
+	            var buyIndex = _state.buyIndex;
+	            var sellIndex = _state.sellIndex;
+
+
 	            var total = 0;
 	            return orders.map(function (order, index) {
-	                if (index < 10) {
+	                if (index >= (buy ? buyIndex : sellIndex) && index < (buy ? buyIndex : sellIndex) + 10) {
 	                    total += order.getSBDAmount();
 	                    var sbd = order.getSBDAmount().toFixed(3);
 	                    var steem = order.getSteemAmount().toFixed(3);
@@ -28890,7 +28895,7 @@
 	                        { key: index + "_" + order.date, className: order.type === "buy" ? "buy" : "sell" },
 	                        React.createElement(
 	                            "td",
-	                            { style: { textAlign: "right", fontSize: "90%" } },
+	                            { style: { textAlign: "right" } },
 	                            _moment2.default.utc(order.date).local().format('MM/DD/YYYY HH:mm:ss')
 	                        ),
 	                        React.createElement(
@@ -28970,16 +28975,30 @@
 	            });
 	        }
 	    }, {
+	        key: "_setBuySellPage",
+	        value: function _setBuySellPage(back, type) {
+	            var indexKey = type === "buy" ? "buyIndex" : "sellIndex";
+	            var arrayKey = type === "buy" ? "bids" : "asks";
+	            var newIndex = this.state[indexKey] + (back ? 10 : -10);
+
+	            newIndex = Math.min(Math.max(0, newIndex), this.state[arrayKey].length - 10);
+	            var newState = {};
+	            newState[indexKey] = newIndex;
+	            this.setState(newState);
+	        }
+	    }, {
 	        key: "render",
 	        value: function render() {
-	            var _state = this.state;
-	            var asks = _state.asks;
-	            var bids = _state.bids;
-	            var history = _state.history;
-	            var ticker = _state.ticker;
-	            var priceHistory = _state.priceHistory;
-	            var priceTop = _state.priceTop;
-	            var historyIndex = _state.historyIndex;
+	            var _state2 = this.state;
+	            var asks = _state2.asks;
+	            var bids = _state2.bids;
+	            var history = _state2.history;
+	            var ticker = _state2.ticker;
+	            var priceHistory = _state2.priceHistory;
+	            var priceTop = _state2.priceTop;
+	            var historyIndex = _state2.historyIndex;
+	            var buyIndex = _state2.buyIndex;
+	            var sellIndex = _state2.sellIndex;
 
 
 	            var bidRows = this.renderOrdersRows(bids, true);
@@ -29083,10 +29102,10 @@
 	                    { className: "col-xs-6 col-lg-4" },
 	                    React.createElement(
 	                        "table",
-	                        { className: "table table-condensed table-striped" },
+	                        { className: "table table-condensed table-striped buy" },
 	                        React.createElement(
 	                            "caption",
-	                            { className: "buy" },
+	                            null,
 	                            "Buy Steem"
 	                        ),
 	                        bidHeader,
@@ -29095,6 +29114,40 @@
 	                            null,
 	                            bidRows
 	                        )
+	                    ),
+	                    React.createElement(
+	                        "nav",
+	                        null,
+	                        React.createElement(
+	                            "ul",
+	                            { className: "pager", style: { marginTop: 0, marginBottom: 0 } },
+	                            React.createElement(
+	                                "li",
+	                                { className: "previous" + (buyIndex === 0 ? " disabled" : "") },
+	                                React.createElement(
+	                                    "a",
+	                                    { onClick: this._setBuySellPage.bind(this, false, "buy"), "aria-label": "Previous" },
+	                                    React.createElement(
+	                                        "span",
+	                                        { "aria-hidden": "true" },
+	                                        "← Higher"
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                "li",
+	                                { className: "next" + (buyIndex >= bids.length - 10 ? " disabled" : "") },
+	                                React.createElement(
+	                                    "a",
+	                                    { onClick: this._setBuySellPage.bind(this, true, "buy"), "aria-label": "Previous" },
+	                                    React.createElement(
+	                                        "span",
+	                                        { "aria-hidden": "true" },
+	                                        "Lower →"
+	                                    )
+	                                )
+	                            )
+	                        )
 	                    )
 	                ),
 	                React.createElement(
@@ -29102,10 +29155,10 @@
 	                    { className: "col-xs-6 col-lg-4" },
 	                    React.createElement(
 	                        "table",
-	                        { className: "table table-condensed table-striped" },
+	                        { className: "table table-condensed table-striped sell" },
 	                        React.createElement(
 	                            "caption",
-	                            { className: "sell" },
+	                            null,
 	                            "Sell Steem"
 	                        ),
 	                        askHeader,
@@ -29114,6 +29167,40 @@
 	                            null,
 	                            askRows
 	                        )
+	                    ),
+	                    React.createElement(
+	                        "nav",
+	                        null,
+	                        React.createElement(
+	                            "ul",
+	                            { className: "pager", style: { marginTop: 0, marginBottom: 0 } },
+	                            React.createElement(
+	                                "li",
+	                                { className: "previous" + (sellIndex === 0 ? " disabled" : "") },
+	                                React.createElement(
+	                                    "a",
+	                                    { onClick: this._setBuySellPage.bind(this, false, "sell"), "aria-label": "Previous" },
+	                                    React.createElement(
+	                                        "span",
+	                                        { "aria-hidden": "true" },
+	                                        "← Lower"
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                "li",
+	                                { className: "next" + (sellIndex >= asks.length - 10 ? " disabled" : "") },
+	                                React.createElement(
+	                                    "a",
+	                                    { onClick: this._setBuySellPage.bind(this, true, "sell"), "aria-label": "Previous" },
+	                                    React.createElement(
+	                                        "span",
+	                                        { "aria-hidden": "true" },
+	                                        "Higher →"
+	                                    )
+	                                )
+	                            )
+	                        )
 	                    )
 	                ),
 	                React.createElement(
@@ -29121,7 +29208,7 @@
 	                    { className: "col-xs-12 col-lg-4" },
 	                    React.createElement(
 	                        "table",
-	                        { className: "table table-condensed" },
+	                        { className: "table table-condensed trade-history" },
 	                        React.createElement(
 	                            "caption",
 	                            null,
@@ -29198,7 +29285,7 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-12" },
+	                    { className: "col-xs-12", style: { paddingTop: 20, paddingBottom: 20 } },
 	                    !priceTop ? priceChart : React.createElement(_DepthChart2.default, { data: { asks: asks, bids: bids } })
 	                )
 	            );
@@ -44146,7 +44233,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker span.positive {\n  color: #339349;\n}\n\nul.market-ticker span.negative {\n  color: #a42015;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n\ntable caption.buy {\n  background: #c2dfc9;\n}\n\ntable caption.sell {\n  background: #e4bdb9;\n}\n\ntable tr.sell > td:nth-of-type(2) {\n  color: #c02a1d;\n}\n\ntable tr.buy > td:nth-of-type(2) {\n  color: #27892f;\n}\n\ntd {\n  font-size: 90%;\n}\n", ""]);
+	exports.push([module.id, "body {\n  padding-top: 20px;\n}\n\nul.market-ticker {\n  list-style: none;\n  padding: 0;\n  text-align: center;\n}\n\nul.market-ticker b {\n  padding: 3px;\n  background: #f8f8f8;\n  border-right: 1px solid #e6e6e6;\n  margin-right: 5px;\n}\n\nul.market-ticker span.positive {\n  color: #339349;\n}\n\nul.market-ticker span.negative {\n  color: #a42015;\n}\n\nul.market-ticker > li {\n  display: inline-block;\n  border: 1px solid #e6e6e6;\n  border-radius: 3px;\n  margin: 0 .25rem;\n  padding-right: .5rem;\n}\n\ntable caption {\n  text-transform: uppercase;\n  text-align: center;\n  background: #f3f3f3;\n}\n\ntable.buy tr > td:last-child {\n  font-weight: bold;\n}\n\ntable.buy caption {\n  background: #c2dfc9;\n}\n\ntable.sell tr > td:first-child {\n  font-weight: bold;\n}\n\ntable.sell caption {\n  background: #e4bdb9;\n}\n\ntable.trade-history tr.sell > td:nth-of-type(2) {\n  color: #c02a1d;\n}\n\ntable.trade-history tr.buy > td:nth-of-type(2) {\n  color: #27892f;\n}\n\ntd {\n  font-size: 90%;\n}\n", ""]);
 
 	// exports
 
