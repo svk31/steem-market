@@ -28820,7 +28820,6 @@
 	            });
 
 	            socket.on('tradehistory', function (data) {
-
 	                var history = data.map(function (fill) {
 	                    return new _marketUtils.TradeHistory(fill);
 	                });
@@ -28842,12 +28841,22 @@
 
 
 	            var total = 0;
-	            return orders.map(function (order, index) {
+	            return orders.reduce(function (previous, current) {
+	                if (!previous.length) {
+	                    previous.push(current);
+	                } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
+	                    previous[previous.length - 1] = previous[previous.length - 1].add(current);
+	                } else {
+	                    previous.push(current);
+	                }
+
+	                return previous;
+	            }, []).map(function (order, index) {
 	                if (index >= (buy ? buyIndex : sellIndex) && index < (buy ? buyIndex : sellIndex) + 10) {
 	                    total += order.getSBDAmount();
 	                    var sbd = order.getSBDAmount().toFixed(3);
 	                    var steem = order.getSteemAmount().toFixed(3);
-	                    var price = order.getPrice().toFixed(5);
+	                    var price = order.getStringPrice();
 	                    return React.createElement(
 	                        "tr",
 	                        { key: index + "_" + order.getPrice() },
@@ -28901,7 +28910,7 @@
 	                        React.createElement(
 	                            "td",
 	                            { style: { textAlign: "right" } },
-	                            order.getPrice().toFixed(5)
+	                            order.getStringPrice()
 	                        ),
 	                        React.createElement(
 	                            "td",
@@ -29007,7 +29016,7 @@
 	            var bidHeader = this.renderBuySellHeader(true);
 	            var askHeader = this.renderBuySellHeader(false);
 
-	            var latest = parseFloat(ticker.latest).toFixed(5);
+	            var latest = parseFloat(ticker.latest).toFixed(6);
 
 	            var changePercent = parseFloat(ticker.percent_change);
 
@@ -29066,7 +29075,7 @@
 	                                "Bid"
 	                            ),
 	                            "$",
-	                            parseFloat(ticker.highest_bid).toFixed(5)
+	                            parseFloat(ticker.highest_bid).toFixed(6)
 	                        ),
 	                        React.createElement(
 	                            "li",
@@ -29077,7 +29086,7 @@
 	                                "Ask"
 	                            ),
 	                            "$",
-	                            parseFloat(ticker.lowest_ask).toFixed(5)
+	                            parseFloat(ticker.lowest_ask).toFixed(6)
 	                        ),
 	                        React.createElement(
 	                            "li",
@@ -30150,6 +30159,7 @@
 
 	        this.type = type;
 	        this.price = type === "ask" ? parseFloat(data.real_price) : parseFloat(data.real_price);
+	        this.stringPrice = this.price.toFixed(6);
 	        this.steem = parseInt(data.steem, 10);
 	        this.sbd = parseInt(data.sbd, 10);
 	    }
@@ -30165,9 +30175,23 @@
 	            return this.price;
 	        }
 	    }, {
+	        key: "getStringPrice",
+	        value: function getStringPrice() {
+	            return this.stringPrice;
+	        }
+	    }, {
 	        key: "getSBDAmount",
 	        value: function getSBDAmount() {
 	            return this.sbd / precision;
+	        }
+	    }, {
+	        key: "add",
+	        value: function add(order) {
+	            return new Order({
+	                real_price: this.price,
+	                steem: this.steem + order.steem,
+	                sbd: this.sbd + order.sbd
+	            }, this.type);
 	        }
 	    }]);
 
@@ -30202,6 +30226,9 @@
 	            this.sbd = parseFloat(fill.open_pays.split(" SBD")[0]);
 	            this.steem = parseFloat(fill.current_pays.split(" STEEM")[0]);
 	        }
+
+	        this.price = this.sbd / this.steem;
+	        this.stringPrice = this.price.toFixed(6);
 	    }
 
 	    _createClass(TradeHistory, [{
@@ -30217,7 +30244,12 @@
 	    }, {
 	        key: "getPrice",
 	        value: function getPrice() {
-	            return this.sbd / this.steem;
+	            return this.price;
+	        }
+	    }, {
+	        key: "getStringPrice",
+	        value: function getStringPrice() {
+	            return this.stringPrice;
 	        }
 	    }]);
 

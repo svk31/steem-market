@@ -65,7 +65,6 @@ class App extends React.Component {
         });
 
         socket.on('tradehistory', (data) => {
-
             let history =  data.map(fill => {
                 return new TradeHistory(fill);
             })
@@ -83,12 +82,23 @@ class App extends React.Component {
         let {buyIndex, sellIndex} = this.state;
 
         var total = 0;
-        return orders.map((order, index) => {
+        return orders.reduce((previous, current) => {
+            if (!previous.length) {
+                previous.push(current);
+            } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
+                previous[previous.length - 1] = previous[previous.length - 1].add(current);
+            } else {
+                previous.push(current);
+            }
+
+            return previous;
+        }, [])
+        .map((order, index) => {
             if (index >= (buy ? buyIndex : sellIndex) && index < ((buy ? buyIndex : sellIndex) + 10)) {
                 total += order.getSBDAmount();
                 let sbd = order.getSBDAmount().toFixed(3);
                 let steem = order.getSteemAmount().toFixed(3);
-                let price = order.getPrice().toFixed(5);
+                let price = order.getStringPrice();
             return (
                 <tr key={index + "_" + order.getPrice()}>
                     <td style={{textAlign: "right"}}>{buy ? total.toFixed(2) : price}</td>
@@ -116,7 +126,7 @@ class App extends React.Component {
                 return (
                     <tr key={index + "_" + order.date} className={order.type === "buy" ? "buy" : "sell"}>
                         <td style={{textAlign: "right"}}>{moment.utc(order.date).local().format('MM/DD/YYYY HH:mm:ss')}</td>
-                        <td style={{textAlign: "right"}}>{order.getPrice().toFixed(5)}</td>
+                        <td style={{textAlign: "right"}}>{order.getStringPrice()}</td>
                         <td style={{textAlign: "right"}}>{order.getSteemAmount().toFixed(2)}</td>
                         <td style={{textAlign: "right"}}>{order.getSBDAmount().toFixed(2)}</td>
                     </tr>
@@ -181,7 +191,7 @@ class App extends React.Component {
         let bidHeader = this.renderBuySellHeader(true);
         let askHeader = this.renderBuySellHeader(false);
 
-        let latest = parseFloat(ticker.latest).toFixed(5);
+        let latest = parseFloat(ticker.latest).toFixed(6);
 
         let changePercent = parseFloat(ticker.percent_change);
 
@@ -196,8 +206,8 @@ class App extends React.Component {
                     <ul className="market-ticker">
                         <li><b>Last price</b>${latest}/STEEM (<span className={changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive"}>{changePercent.toFixed(3)}%</span>)</li>
                         <li><b>24h volume</b>${(ticker.sbd_volume / 1000).toFixed(4)}</li>
-                        <li><b>Bid</b>${parseFloat(ticker.highest_bid).toFixed(5)}</li>
-                        <li><b>Ask</b>${parseFloat(ticker.lowest_ask).toFixed(5)}</li>
+                        <li><b>Bid</b>${parseFloat(ticker.highest_bid).toFixed(6)}</li>
+                        <li><b>Ask</b>${parseFloat(ticker.lowest_ask).toFixed(6)}</li>
                         <li><b>Spread</b>{(100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2)}%</li>
 
                     </ul> : null}

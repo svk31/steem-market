@@ -5,6 +5,7 @@ class Order {
         this.type = type;
         this.price = type === "ask" ? parseFloat(data.real_price) :
             (parseFloat(data.real_price));
+        this.stringPrice = this.price.toFixed(6);
         this.steem = parseInt(data.steem, 10);
         this.sbd = parseInt(data.sbd, 10);
     }
@@ -17,8 +18,20 @@ class Order {
         return this.price;
     }
 
+    getStringPrice() {
+        return this.stringPrice;
+    }
+
     getSBDAmount() {
         return this.sbd / precision;
+    }
+
+    add(order) {
+        return new Order({
+            real_price: this.price,
+            steem: this.steem + order.steem,
+            sbd: this.sbd + order.sbd
+        }, this.type);
     }
 }
 
@@ -49,6 +62,9 @@ class TradeHistory {
             this.sbd = parseFloat(fill.open_pays.split(" SBD")[0]);
             this.steem = parseFloat(fill.current_pays.split(" STEEM")[0]);
         }
+
+        this.price = this.sbd / this.steem;
+        this.stringPrice = this.price.toFixed(6);
     }
 
     getSteemAmount() {
@@ -60,7 +76,11 @@ class TradeHistory {
     }
 
     getPrice() {
-        return this.sbd / this.steem;
+        return this.price;
+    }
+
+    getStringPrice() {
+        return this.stringPrice;
     }
 
 }
