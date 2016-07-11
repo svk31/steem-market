@@ -1839,7 +1839,7 @@
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(334)("./" + name);
+	                __webpack_require__(332)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -4271,7 +4271,7 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)(module)))
 
 /***/ },
 /* 2 */
@@ -4938,7 +4938,7 @@
 	var ReactCurrentOwner = __webpack_require__(15);
 
 	var warning = __webpack_require__(5);
-	var canDefineProperty = __webpack_require__(54);
+	var canDefineProperty = __webpack_require__(53);
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 	// The Symbol used to tag the ReactElement type. If there is no native Symbol
@@ -7123,10 +7123,10 @@
 
 	'use strict';
 
-	var DOMNamespaces = __webpack_require__(47);
+	var DOMNamespaces = __webpack_require__(46);
 	var setInnerHTML = __webpack_require__(41);
 
-	var createMicrosoftUnsafeLocalFunction = __webpack_require__(55);
+	var createMicrosoftUnsafeLocalFunction = __webpack_require__(54);
 	var setTextContent = __webpack_require__(106);
 
 	var ELEMENT_NODE_TYPE = 1;
@@ -7660,8 +7660,8 @@
 	var _prodInvariant = __webpack_require__(4);
 
 	var EventPluginRegistry = __webpack_require__(34);
-	var EventPluginUtils = __webpack_require__(48);
-	var ReactErrorUtils = __webpack_require__(52);
+	var EventPluginUtils = __webpack_require__(47);
+	var ReactErrorUtils = __webpack_require__(51);
 
 	var accumulateInto = __webpack_require__(99);
 	var forEachAccumulated = __webpack_require__(101);
@@ -7906,7 +7906,7 @@
 
 	var EventConstants = __webpack_require__(14);
 	var EventPluginHub = __webpack_require__(24);
-	var EventPluginUtils = __webpack_require__(48);
+	var EventPluginUtils = __webpack_require__(47);
 
 	var accumulateInto = __webpack_require__(99);
 	var forEachAccumulated = __webpack_require__(101);
@@ -8049,7 +8049,7 @@
 
 	var SyntheticEvent = __webpack_require__(16);
 
-	var getEventTarget = __webpack_require__(58);
+	var getEventTarget = __webpack_require__(57);
 
 	/**
 	 * @interface UIEvent
@@ -9136,7 +9136,7 @@
 	var ViewportMetrics = __webpack_require__(98);
 
 	var getVendorPrefixedEventName = __webpack_require__(320);
-	var isEventSupported = __webpack_require__(60);
+	var isEventSupported = __webpack_require__(59);
 
 	/**
 	 * Summary of `ReactBrowserEventEmitter` event handling:
@@ -9533,7 +9533,7 @@
 	var SyntheticUIEvent = __webpack_require__(26);
 	var ViewportMetrics = __webpack_require__(98);
 
-	var getEventModifierState = __webpack_require__(57);
+	var getEventModifierState = __webpack_require__(56);
 
 	/**
 	 * @interface MouseEvent
@@ -9974,12 +9974,12 @@
 	'use strict';
 
 	var ExecutionEnvironment = __webpack_require__(8);
-	var DOMNamespaces = __webpack_require__(47);
+	var DOMNamespaces = __webpack_require__(46);
 
 	var WHITESPACE_TEST = /^[ \r\n\t\f]/;
 	var NONVISIBLE_TEST = /<(!--|link|noscript|meta|script|style)[ \r\n\t\f\/>]/;
 
-	var createMicrosoftUnsafeLocalFunction = __webpack_require__(55);
+	var createMicrosoftUnsafeLocalFunction = __webpack_require__(54);
 
 	// SVG temp container for IE lacking innerHTML
 	var reusableSVGContainer;
@@ -10061,22 +10061,6 @@
 
 /***/ },
 /* 42 */
-/***/ function(module, exports) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10237,7 +10221,7 @@
 
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// browser shim for xmlhttprequest module
@@ -10279,7 +10263,7 @@
 
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/**
@@ -10322,7 +10306,7 @@
 
 
 /***/ },
-/* 46 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10344,7 +10328,7 @@
 	var ReactDOMComponentTree = __webpack_require__(7);
 	var ReactInstrumentation = __webpack_require__(9);
 
-	var createMicrosoftUnsafeLocalFunction = __webpack_require__(55);
+	var createMicrosoftUnsafeLocalFunction = __webpack_require__(54);
 	var setInnerHTML = __webpack_require__(41);
 	var setTextContent = __webpack_require__(106);
 
@@ -10522,7 +10506,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 47 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/**
@@ -10547,7 +10531,7 @@
 	module.exports = DOMNamespaces;
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10566,7 +10550,7 @@
 	var _prodInvariant = __webpack_require__(4);
 
 	var EventConstants = __webpack_require__(14);
-	var ReactErrorUtils = __webpack_require__(52);
+	var ReactErrorUtils = __webpack_require__(51);
 
 	var invariant = __webpack_require__(3);
 	var warning = __webpack_require__(5);
@@ -10782,7 +10766,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/**
@@ -10845,7 +10829,7 @@
 	module.exports = KeyEscapeUtils;
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10986,7 +10970,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 51 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11045,7 +11029,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 52 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11127,7 +11111,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 53 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11157,7 +11141,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 54 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11187,7 +11171,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 55 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/**
@@ -11224,7 +11208,7 @@
 	module.exports = createMicrosoftUnsafeLocalFunction;
 
 /***/ },
-/* 56 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/**
@@ -11279,7 +11263,7 @@
 	module.exports = getEventCharCode;
 
 /***/ },
-/* 57 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/**
@@ -11327,7 +11311,7 @@
 	module.exports = getEventModifierState;
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -11367,7 +11351,7 @@
 	module.exports = getEventTarget;
 
 /***/ },
-/* 59 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/**
@@ -11412,7 +11396,7 @@
 	module.exports = getIteratorFn;
 
 /***/ },
-/* 60 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11477,7 +11461,7 @@
 	module.exports = isEventSupported;
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/**
@@ -11524,7 +11508,7 @@
 	module.exports = shouldUpdateReactComponent;
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11545,9 +11529,9 @@
 	var ReactCurrentOwner = __webpack_require__(15);
 	var ReactElement = __webpack_require__(11);
 
-	var getIteratorFn = __webpack_require__(59);
+	var getIteratorFn = __webpack_require__(58);
 	var invariant = __webpack_require__(3);
-	var KeyEscapeUtils = __webpack_require__(49);
+	var KeyEscapeUtils = __webpack_require__(48);
 	var warning = __webpack_require__(5);
 
 	var SEPARATOR = '.';
@@ -11690,7 +11674,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -12065,7 +12049,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 64 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -12471,6 +12455,22 @@
 
 
 /***/ },
+/* 64 */
+/***/ function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
 /* 65 */
 /***/ function(module, exports) {
 
@@ -12507,7 +12507,7 @@
 	 * Module dependencies
 	 */
 
-	var XMLHttpRequest = __webpack_require__(44);
+	var XMLHttpRequest = __webpack_require__(43);
 	var XHR = __webpack_require__(233);
 	var JSONP = __webpack_require__(232);
 	var websocket = __webpack_require__(234);
@@ -12567,8 +12567,8 @@
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(43);
-	var parseqs = __webpack_require__(45);
+	var Transport = __webpack_require__(42);
+	var parseqs = __webpack_require__(44);
 	var parser = __webpack_require__(20);
 	var inherit = __webpack_require__(29);
 	var yeast = __webpack_require__(113);
@@ -12585,7 +12585,7 @@
 	 */
 
 	var hasXHR2 = (function() {
-	  var XMLHttpRequest = __webpack_require__(44);
+	  var XMLHttpRequest = __webpack_require__(43);
 	  var xhr = new XMLHttpRequest({ xdomain: false });
 	  return null != xhr.responseType;
 	})();
@@ -13736,7 +13736,7 @@
 	var ReactElement = __webpack_require__(11);
 
 	var emptyFunction = __webpack_require__(10);
-	var traverseAllChildren = __webpack_require__(62);
+	var traverseAllChildren = __webpack_require__(61);
 
 	var twoArgumentPooler = PooledClass.twoArgumentPooler;
 	var fourArgumentPooler = PooledClass.fourArgumentPooler;
@@ -13934,7 +13934,7 @@
 	var ReactComponent = __webpack_require__(81);
 	var ReactElement = __webpack_require__(11);
 	var ReactPropTypeLocations = __webpack_require__(37);
-	var ReactPropTypeLocationNames = __webpack_require__(53);
+	var ReactPropTypeLocationNames = __webpack_require__(52);
 	var ReactNoopUpdateQueue = __webpack_require__(94);
 
 	var emptyObject = __webpack_require__(30);
@@ -14663,7 +14663,7 @@
 
 	var ReactNoopUpdateQueue = __webpack_require__(94);
 
-	var canDefineProperty = __webpack_require__(54);
+	var canDefineProperty = __webpack_require__(53);
 	var emptyObject = __webpack_require__(30);
 	var invariant = __webpack_require__(3);
 	var warning = __webpack_require__(5);
@@ -14783,7 +14783,7 @@
 
 	'use strict';
 
-	var DOMChildrenOperations = __webpack_require__(46);
+	var DOMChildrenOperations = __webpack_require__(45);
 	var ReactDOMIDOperations = __webpack_require__(279);
 
 	/**
@@ -14853,7 +14853,7 @@
 	var _assign = __webpack_require__(6);
 
 	var DisabledInputUtils = __webpack_require__(33);
-	var LinkedValueUtils = __webpack_require__(50);
+	var LinkedValueUtils = __webpack_require__(49);
 	var ReactDOMComponentTree = __webpack_require__(7);
 	var ReactUpdates = __webpack_require__(12);
 
@@ -15400,8 +15400,8 @@
 
 	var checkReactTypeSpec = __webpack_require__(100);
 
-	var canDefineProperty = __webpack_require__(54);
-	var getIteratorFn = __webpack_require__(59);
+	var canDefineProperty = __webpack_require__(53);
+	var getIteratorFn = __webpack_require__(58);
 	var warning = __webpack_require__(5);
 
 	function getDeclarationErrorAddendum() {
@@ -15911,7 +15911,7 @@
 	var instantiateReactComponent = __webpack_require__(104);
 	var invariant = __webpack_require__(3);
 	var setInnerHTML = __webpack_require__(41);
-	var shouldUpdateReactComponent = __webpack_require__(61);
+	var shouldUpdateReactComponent = __webpack_require__(60);
 	var warning = __webpack_require__(5);
 
 	var ATTR_NAME = DOMProperty.ID_ATTRIBUTE_NAME;
@@ -16581,10 +16581,10 @@
 	'use strict';
 
 	var ReactElement = __webpack_require__(11);
-	var ReactPropTypeLocationNames = __webpack_require__(53);
+	var ReactPropTypeLocationNames = __webpack_require__(52);
 
 	var emptyFunction = __webpack_require__(10);
-	var getIteratorFn = __webpack_require__(59);
+	var getIteratorFn = __webpack_require__(58);
 
 	/**
 	 * Collection of methods that allow declaration and validation of props that are
@@ -17338,7 +17338,7 @@
 	var _prodInvariant = __webpack_require__(4);
 
 	var ReactComponentTreeDevtool = __webpack_require__(22);
-	var ReactPropTypeLocationNames = __webpack_require__(53);
+	var ReactPropTypeLocationNames = __webpack_require__(52);
 
 	var invariant = __webpack_require__(3);
 	var warning = __webpack_require__(5);
@@ -17765,7 +17765,7 @@
 	var eio = __webpack_require__(229);
 	var Socket = __webpack_require__(109);
 	var Emitter = __webpack_require__(110);
-	var parser = __webpack_require__(64);
+	var parser = __webpack_require__(63);
 	var on = __webpack_require__(108);
 	var bind = __webpack_require__(65);
 	var debug = __webpack_require__(13)('socket.io-client:manager');
@@ -18355,7 +18355,7 @@
 	 * Module dependencies.
 	 */
 
-	var parser = __webpack_require__(64);
+	var parser = __webpack_require__(63);
 	var Emitter = __webpack_require__(110);
 	var toArray = __webpack_require__(328);
 	var on = __webpack_require__(108);
@@ -28759,7 +28759,7 @@
 	var socketIO = __webpack_require__(324);
 
 
-	__webpack_require__(337);
+	__webpack_require__(335);
 
 	_highstock2.default.setOptions({
 	    global: {
@@ -28948,169 +28948,181 @@
 	                { className: "container" },
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-12" },
+	                    { className: "row" },
 	                    React.createElement(
 	                        "div",
-	                        { className: "btn btn-default pull-left", onClick: this._toggleChartPosition.bind(this) },
-	                        "Switch charts"
-	                    ),
-	                    Object.keys(ticker).length ? React.createElement(
-	                        "ul",
-	                        { className: "market-ticker" },
+	                        { className: "col-xs-12" },
 	                        React.createElement(
-	                            "li",
-	                            null,
-	                            React.createElement(
-	                                "b",
-	                                null,
-	                                "Last price"
-	                            ),
-	                            "$",
-	                            latest,
-	                            "/STEEM (",
-	                            React.createElement(
-	                                "span",
-	                                { className: changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive" },
-	                                changePercent.toFixed(3),
-	                                "%"
-	                            ),
-	                            ")"
+	                            "div",
+	                            { className: "btn btn-default pull-left", onClick: this._toggleChartPosition.bind(this) },
+	                            "Switch charts"
 	                        ),
-	                        React.createElement(
-	                            "li",
-	                            null,
-	                            React.createElement(
-	                                "b",
-	                                null,
-	                                "24h volume"
-	                            ),
-	                            "$",
-	                            (ticker.sbd_volume / 1000).toFixed(4)
-	                        ),
-	                        React.createElement(
-	                            "li",
-	                            null,
-	                            React.createElement(
-	                                "b",
-	                                null,
-	                                "Bid"
-	                            ),
-	                            "$",
-	                            parseFloat(ticker.highest_bid).toFixed(6)
-	                        ),
-	                        React.createElement(
-	                            "li",
-	                            null,
-	                            React.createElement(
-	                                "b",
-	                                null,
-	                                "Ask"
-	                            ),
-	                            "$",
-	                            parseFloat(ticker.lowest_ask).toFixed(6)
-	                        ),
-	                        React.createElement(
-	                            "li",
-	                            null,
-	                            React.createElement(
-	                                "b",
-	                                null,
-	                                "Spread"
-	                            ),
-	                            (100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2),
-	                            "%"
-	                        )
-	                    ) : null
-	                ),
-	                React.createElement(
-	                    "div",
-	                    { className: "col-xs-12" },
-	                    priceTop ? priceChart : React.createElement(_DepthChart2.default, { data: { asks: asks, bids: bids } })
-	                ),
-	                React.createElement(
-	                    "div",
-	                    { className: "col-xs-6 col-lg-4" },
-	                    React.createElement(_Orderbook2.default, { orders: bids, buy: true })
-	                ),
-	                React.createElement(
-	                    "div",
-	                    { className: "col-xs-6 col-lg-4" },
-	                    React.createElement(_Orderbook2.default, { orders: asks, sell: true })
-	                ),
-	                React.createElement(
-	                    "div",
-	                    { className: "col-xs-12 col-lg-4" },
-	                    React.createElement(
-	                        "table",
-	                        { className: "table table-condensed trade-history" },
-	                        React.createElement(
-	                            "caption",
-	                            null,
-	                            "Order history"
-	                        ),
-	                        React.createElement(
-	                            "thead",
-	                            null,
-	                            React.createElement(
-	                                "tr",
-	                                null,
-	                                React.createElement(
-	                                    "th",
-	                                    { style: { textAlign: "center" } },
-	                                    "Date"
-	                                ),
-	                                React.createElement(
-	                                    "th",
-	                                    { style: { textAlign: "right" } },
-	                                    "Price"
-	                                ),
-	                                React.createElement(
-	                                    "th",
-	                                    { style: { textAlign: "right" } },
-	                                    "Steem"
-	                                ),
-	                                React.createElement(
-	                                    "th",
-	                                    { style: { textAlign: "right" } },
-	                                    "SD ($)"
-	                                )
-	                            )
-	                        ),
-	                        React.createElement(
-	                            "tbody",
-	                            null,
-	                            this.renderHistoryRows(history)
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "nav",
-	                        null,
-	                        React.createElement(
+	                        Object.keys(ticker).length ? React.createElement(
 	                            "ul",
-	                            { className: "pager", style: { marginTop: 0, marginBottom: 0 } },
+	                            { className: "market-ticker" },
 	                            React.createElement(
 	                                "li",
-	                                { className: "previous" + (historyIndex === 0 ? " disabled" : "") },
+	                                null,
 	                                React.createElement(
-	                                    "a",
-	                                    { onClick: this._setHistoryPage.bind(this, false), "aria-label": "Previous" },
+	                                    "b",
+	                                    null,
+	                                    "Last price"
+	                                ),
+	                                "$",
+	                                latest,
+	                                "/STEEM (",
+	                                React.createElement(
+	                                    "span",
+	                                    { className: changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive" },
+	                                    changePercent.toFixed(3),
+	                                    "%"
+	                                ),
+	                                ")"
+	                            ),
+	                            React.createElement(
+	                                "li",
+	                                null,
+	                                React.createElement(
+	                                    "b",
+	                                    null,
+	                                    "24h volume"
+	                                ),
+	                                "$",
+	                                (ticker.sbd_volume / 1000).toFixed(4)
+	                            ),
+	                            React.createElement(
+	                                "li",
+	                                null,
+	                                React.createElement(
+	                                    "b",
+	                                    null,
+	                                    "Bid"
+	                                ),
+	                                "$",
+	                                parseFloat(ticker.highest_bid).toFixed(6)
+	                            ),
+	                            React.createElement(
+	                                "li",
+	                                null,
+	                                React.createElement(
+	                                    "b",
+	                                    null,
+	                                    "Ask"
+	                                ),
+	                                "$",
+	                                parseFloat(ticker.lowest_ask).toFixed(6)
+	                            ),
+	                            React.createElement(
+	                                "li",
+	                                null,
+	                                React.createElement(
+	                                    "b",
+	                                    null,
+	                                    "Spread"
+	                                ),
+	                                (100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2),
+	                                "%"
+	                            )
+	                        ) : null
+	                    )
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { className: "row" },
+	                    React.createElement(
+	                        "div",
+	                        { className: "col-xs-12" },
+	                        priceTop ? priceChart : React.createElement(_DepthChart2.default, { data: { asks: asks, bids: bids } })
+	                    )
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { className: "row" },
+	                    React.createElement(
+	                        "div",
+	                        { className: "col-xs-6 col-lg-4" },
+	                        React.createElement(_Orderbook2.default, { orders: bids, buy: true })
+	                    ),
+	                    React.createElement(
+	                        "div",
+	                        { className: "col-xs-6 col-lg-4" },
+	                        React.createElement(_Orderbook2.default, { orders: asks, sell: true })
+	                    ),
+	                    React.createElement(
+	                        "div",
+	                        { className: "col-xs-12 col-lg-4" },
+	                        React.createElement(
+	                            "table",
+	                            { className: "table table-condensed trade-history" },
+	                            React.createElement(
+	                                "caption",
+	                                null,
+	                                "Order history"
+	                            ),
+	                            React.createElement(
+	                                "thead",
+	                                null,
+	                                React.createElement(
+	                                    "tr",
+	                                    null,
 	                                    React.createElement(
-	                                        "span",
-	                                        { "aria-hidden": "true" },
-	                                        "← Newer"
+	                                        "th",
+	                                        { style: { textAlign: "center" } },
+	                                        "Date"
+	                                    ),
+	                                    React.createElement(
+	                                        "th",
+	                                        { style: { textAlign: "right" } },
+	                                        "Price"
+	                                    ),
+	                                    React.createElement(
+	                                        "th",
+	                                        { style: { textAlign: "right" } },
+	                                        "Steem"
+	                                    ),
+	                                    React.createElement(
+	                                        "th",
+	                                        { style: { textAlign: "right" } },
+	                                        "SD ($)"
 	                                    )
 	                                )
 	                            ),
 	                            React.createElement(
-	                                "li",
-	                                { className: "next" + (historyIndex >= history.length - 10 ? " disabled" : "") },
+	                                "tbody",
+	                                null,
+	                                this.renderHistoryRows(history)
+	                            )
+	                        ),
+	                        React.createElement(
+	                            "nav",
+	                            null,
+	                            React.createElement(
+	                                "ul",
+	                                { className: "pager", style: { marginTop: 0, marginBottom: 0 } },
 	                                React.createElement(
-	                                    "a",
-	                                    { onClick: this._setHistoryPage.bind(this, true), "aria-label": "Previous" },
+	                                    "li",
+	                                    { className: "previous" + (historyIndex === 0 ? " disabled" : "") },
 	                                    React.createElement(
-	                                        "span",
-	                                        { "aria-hidden": "true" },
-	                                        "Older →"
+	                                        "a",
+	                                        { onClick: this._setHistoryPage.bind(this, false), "aria-label": "Previous" },
+	                                        React.createElement(
+	                                            "span",
+	                                            { "aria-hidden": "true" },
+	                                            "← Newer"
+	                                        )
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    "li",
+	                                    { className: "next" + (historyIndex >= history.length - 10 ? " disabled" : "") },
+	                                    React.createElement(
+	                                        "a",
+	                                        { onClick: this._setHistoryPage.bind(this, true), "aria-label": "Previous" },
+	                                        React.createElement(
+	                                            "span",
+	                                            { "aria-hidden": "true" },
+	                                            "Older →"
+	                                        )
 	                                    )
 	                                )
 	                            )
@@ -29119,8 +29131,12 @@
 	                ),
 	                React.createElement(
 	                    "div",
-	                    { className: "col-xs-12", style: { paddingTop: 20, paddingBottom: 20 } },
-	                    !priceTop ? priceChart : React.createElement(_DepthChart2.default, { data: { asks: asks, bids: bids } })
+	                    { className: "row" },
+	                    React.createElement(
+	                        "div",
+	                        { className: "col-xs-12", style: { paddingTop: 20, paddingBottom: 20 } },
+	                        !priceTop ? priceChart : React.createElement(_DepthChart2.default, { data: { asks: asks, bids: bids } })
+	                    )
 	                )
 	            );
 	        }
@@ -30452,7 +30468,7 @@
 
 	"use strict";
 
-	var _numeral = __webpack_require__(335);
+	var _numeral = __webpack_require__(333);
 
 	var _numeral2 = _interopRequireDefault(_numeral);
 
@@ -30988,7 +31004,7 @@
 	var parser = __webpack_require__(20);
 	var parseuri = __webpack_require__(74);
 	var parsejson = __webpack_require__(257);
-	var parseqs = __webpack_require__(45);
+	var parseqs = __webpack_require__(44);
 
 	/**
 	 * Module exports.
@@ -31112,7 +31128,7 @@
 	 */
 
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(43);
+	Socket.Transport = __webpack_require__(42);
 	Socket.transports = __webpack_require__(66);
 	Socket.parser = __webpack_require__(20);
 
@@ -31961,7 +31977,7 @@
 	 * Module requirements.
 	 */
 
-	var XMLHttpRequest = __webpack_require__(44);
+	var XMLHttpRequest = __webpack_require__(43);
 	var Polling = __webpack_require__(67);
 	var Emitter = __webpack_require__(28);
 	var inherit = __webpack_require__(29);
@@ -32380,9 +32396,9 @@
 	 * Module dependencies.
 	 */
 
-	var Transport = __webpack_require__(43);
+	var Transport = __webpack_require__(42);
 	var parser = __webpack_require__(20);
-	var parseqs = __webpack_require__(45);
+	var parseqs = __webpack_require__(44);
 	var inherit = __webpack_require__(29);
 	var yeast = __webpack_require__(113);
 	var debug = __webpack_require__(13)('engine.io-client:websocket');
@@ -32397,7 +32413,7 @@
 	var WebSocket = BrowserWebSocket;
 	if (!WebSocket && typeof window === 'undefined') {
 	  try {
-	    WebSocket = __webpack_require__(339);
+	    WebSocket = __webpack_require__(337);
 	  } catch (e) { }
 	}
 
@@ -34370,8 +34386,8 @@
 	var ReactUpdates = __webpack_require__(12);
 	var SyntheticEvent = __webpack_require__(16);
 
-	var getEventTarget = __webpack_require__(58);
-	var isEventSupported = __webpack_require__(60);
+	var getEventTarget = __webpack_require__(57);
+	var isEventSupported = __webpack_require__(59);
 	var isTextInputElement = __webpack_require__(105);
 	var keyOf = __webpack_require__(17);
 
@@ -35396,9 +35412,9 @@
 
 	var ReactComponentTreeDevtool = __webpack_require__(22);
 	var instantiateReactComponent = __webpack_require__(104);
-	var KeyEscapeUtils = __webpack_require__(49);
-	var shouldUpdateReactComponent = __webpack_require__(61);
-	var traverseAllChildren = __webpack_require__(62);
+	var KeyEscapeUtils = __webpack_require__(48);
+	var shouldUpdateReactComponent = __webpack_require__(60);
+	var traverseAllChildren = __webpack_require__(61);
 	var warning = __webpack_require__(5);
 
 	function instantiateChild(childInstances, child, name, selfDebugID) {
@@ -35535,10 +35551,10 @@
 	var _prodInvariant = __webpack_require__(4),
 	    _assign = __webpack_require__(6);
 
-	var ReactComponentEnvironment = __webpack_require__(51);
+	var ReactComponentEnvironment = __webpack_require__(50);
 	var ReactCurrentOwner = __webpack_require__(15);
 	var ReactElement = __webpack_require__(11);
-	var ReactErrorUtils = __webpack_require__(52);
+	var ReactErrorUtils = __webpack_require__(51);
 	var ReactInstanceMap = __webpack_require__(36);
 	var ReactInstrumentation = __webpack_require__(9);
 	var ReactNodeTypes = __webpack_require__(93);
@@ -35550,7 +35566,7 @@
 
 	var emptyObject = __webpack_require__(30);
 	var invariant = __webpack_require__(3);
-	var shouldUpdateReactComponent = __webpack_require__(61);
+	var shouldUpdateReactComponent = __webpack_require__(60);
 	var warning = __webpack_require__(5);
 
 	function StatelessComponent(Component) {}
@@ -36565,7 +36581,7 @@
 	var AutoFocusUtils = __webpack_require__(259);
 	var CSSPropertyOperations = __webpack_require__(261);
 	var DOMLazyTree = __webpack_require__(21);
-	var DOMNamespaces = __webpack_require__(47);
+	var DOMNamespaces = __webpack_require__(46);
 	var DOMProperty = __webpack_require__(19);
 	var DOMPropertyOperations = __webpack_require__(78);
 	var EventConstants = __webpack_require__(14);
@@ -36587,10 +36603,10 @@
 	var emptyFunction = __webpack_require__(10);
 	var escapeTextContentForBrowser = __webpack_require__(40);
 	var invariant = __webpack_require__(3);
-	var isEventSupported = __webpack_require__(60);
+	var isEventSupported = __webpack_require__(59);
 	var keyOf = __webpack_require__(17);
 	var shallowEqual = __webpack_require__(72);
-	var validateDOMNesting = __webpack_require__(63);
+	var validateDOMNesting = __webpack_require__(62);
 	var warning = __webpack_require__(5);
 
 	var Flags = ReactDOMComponentFlags;
@@ -37566,7 +37582,7 @@
 
 	'use strict';
 
-	var validateDOMNesting = __webpack_require__(63);
+	var validateDOMNesting = __webpack_require__(62);
 
 	var DOC_NODE_TYPE = 9;
 
@@ -37948,7 +37964,7 @@
 
 	'use strict';
 
-	var DOMChildrenOperations = __webpack_require__(46);
+	var DOMChildrenOperations = __webpack_require__(45);
 	var ReactDOMComponentTree = __webpack_require__(7);
 
 	/**
@@ -37992,7 +38008,7 @@
 
 	var DisabledInputUtils = __webpack_require__(33);
 	var DOMPropertyOperations = __webpack_require__(78);
-	var LinkedValueUtils = __webpack_require__(50);
+	var LinkedValueUtils = __webpack_require__(49);
 	var ReactDOMComponentTree = __webpack_require__(7);
 	var ReactUpdates = __webpack_require__(12);
 
@@ -38605,14 +38621,14 @@
 	var _prodInvariant = __webpack_require__(4),
 	    _assign = __webpack_require__(6);
 
-	var DOMChildrenOperations = __webpack_require__(46);
+	var DOMChildrenOperations = __webpack_require__(45);
 	var DOMLazyTree = __webpack_require__(21);
 	var ReactDOMComponentTree = __webpack_require__(7);
 	var ReactInstrumentation = __webpack_require__(9);
 
 	var escapeTextContentForBrowser = __webpack_require__(40);
 	var invariant = __webpack_require__(3);
-	var validateDOMNesting = __webpack_require__(63);
+	var validateDOMNesting = __webpack_require__(62);
 
 	/**
 	 * Text nodes violate a couple assumptions that React makes about components:
@@ -38783,7 +38799,7 @@
 	    _assign = __webpack_require__(6);
 
 	var DisabledInputUtils = __webpack_require__(33);
-	var LinkedValueUtils = __webpack_require__(50);
+	var LinkedValueUtils = __webpack_require__(49);
 	var ReactDOMComponentTree = __webpack_require__(7);
 	var ReactUpdates = __webpack_require__(12);
 
@@ -39422,7 +39438,7 @@
 	var ReactDOMComponentTree = __webpack_require__(7);
 	var ReactUpdates = __webpack_require__(12);
 
-	var getEventTarget = __webpack_require__(58);
+	var getEventTarget = __webpack_require__(57);
 	var getUnboundedScrollPosition = __webpack_require__(243);
 
 	/**
@@ -39620,8 +39636,8 @@
 
 	var DOMProperty = __webpack_require__(19);
 	var EventPluginHub = __webpack_require__(24);
-	var EventPluginUtils = __webpack_require__(48);
-	var ReactComponentEnvironment = __webpack_require__(51);
+	var EventPluginUtils = __webpack_require__(47);
+	var ReactComponentEnvironment = __webpack_require__(50);
 	var ReactClass = __webpack_require__(80);
 	var ReactEmptyComponent = __webpack_require__(87);
 	var ReactBrowserEventEmitter = __webpack_require__(35);
@@ -39758,7 +39774,7 @@
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var ReactComponentEnvironment = __webpack_require__(51);
+	var ReactComponentEnvironment = __webpack_require__(50);
 	var ReactInstanceMap = __webpack_require__(36);
 	var ReactInstrumentation = __webpack_require__(9);
 	var ReactMultiChildUpdateTypes = __webpack_require__(92);
@@ -41160,7 +41176,7 @@
 	var SyntheticWheelEvent = __webpack_require__(313);
 
 	var emptyFunction = __webpack_require__(10);
-	var getEventCharCode = __webpack_require__(56);
+	var getEventCharCode = __webpack_require__(55);
 	var invariant = __webpack_require__(3);
 	var keyOf = __webpack_require__(17);
 
@@ -42030,9 +42046,9 @@
 
 	var SyntheticUIEvent = __webpack_require__(26);
 
-	var getEventCharCode = __webpack_require__(56);
+	var getEventCharCode = __webpack_require__(55);
 	var getEventKey = __webpack_require__(318);
-	var getEventModifierState = __webpack_require__(57);
+	var getEventModifierState = __webpack_require__(56);
 
 	/**
 	 * @interface KeyboardEvent
@@ -42119,7 +42135,7 @@
 
 	var SyntheticUIEvent = __webpack_require__(26);
 
-	var getEventModifierState = __webpack_require__(57);
+	var getEventModifierState = __webpack_require__(56);
 
 	/**
 	 * @interface TouchEvent
@@ -42470,8 +42486,8 @@
 	'use strict';
 
 	var ReactComponentTreeDevtool = __webpack_require__(22);
-	var KeyEscapeUtils = __webpack_require__(49);
-	var traverseAllChildren = __webpack_require__(62);
+	var KeyEscapeUtils = __webpack_require__(48);
+	var traverseAllChildren = __webpack_require__(61);
 	var warning = __webpack_require__(5);
 
 	/**
@@ -42533,7 +42549,7 @@
 
 	'use strict';
 
-	var getEventCharCode = __webpack_require__(56);
+	var getEventCharCode = __webpack_require__(55);
 
 	/**
 	 * Normalization of deprecated HTML5 `key` values
@@ -42914,7 +42930,7 @@
 	 */
 
 	var url = __webpack_require__(325);
-	var parser = __webpack_require__(64);
+	var parser = __webpack_require__(63);
 	var Manager = __webpack_require__(107);
 	var debug = __webpack_require__(13)('socket.io-client');
 
@@ -43241,7 +43257,7 @@
 	;(function () {
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(338);
+	  var isLoader = "function" === "function" && __webpack_require__(336);
 
 	  // A set of types used to distinguish objects from primitives.
 	  var objectTypes = {
@@ -44140,7 +44156,7 @@
 	  }
 	}).call(this);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)(module), (function() { return this; }())))
 
 /***/ },
 /* 328 */
@@ -44408,7 +44424,7 @@
 
 	}(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)(module), (function() { return this; }())))
 
 /***/ },
 /* 330 */
@@ -44481,9 +44497,7 @@
 
 
 /***/ },
-/* 332 */,
-/* 333 */,
-/* 334 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
@@ -44701,11 +44715,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 334;
+	webpackContext.id = 332;
 
 
 /***/ },
-/* 335 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -45390,7 +45404,7 @@
 
 
 /***/ },
-/* 336 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -45642,7 +45656,7 @@
 
 
 /***/ },
-/* 337 */
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -45651,7 +45665,7 @@
 	var content = __webpack_require__(330);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(336)(content, {});
+	var update = __webpack_require__(334)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -45668,7 +45682,7 @@
 	}
 
 /***/ },
-/* 338 */
+/* 336 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -45676,7 +45690,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 339 */
+/* 337 */
 /***/ function(module, exports) {
 
 	/* (ignored) */

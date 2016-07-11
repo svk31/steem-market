@@ -157,71 +157,80 @@ class App extends React.Component {
         return (
             <div className="container">
 
-                <div className="col-xs-12">
-                    <div className="btn btn-default pull-left" onClick={this._toggleChartPosition.bind(this)}>Switch charts</div>
-                    {Object.keys(ticker).length ?
-                    <ul className="market-ticker">
-                        <li><b>Last price</b>${latest}/STEEM (<span className={changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive"}>{changePercent.toFixed(3)}%</span>)</li>
-                        <li><b>24h volume</b>${(ticker.sbd_volume / 1000).toFixed(4)}</li>
-                        <li><b>Bid</b>${parseFloat(ticker.highest_bid).toFixed(6)}</li>
-                        <li><b>Ask</b>${parseFloat(ticker.lowest_ask).toFixed(6)}</li>
-                        <li><b>Spread</b>{(100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2)}%</li>
 
-                    </ul> : null}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="btn btn-default pull-left" onClick={this._toggleChartPosition.bind(this)}>Switch charts</div>
+                        {Object.keys(ticker).length ?
+                        <ul className="market-ticker">
+                            <li><b>Last price</b>${latest}/STEEM (<span className={changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive"}>{changePercent.toFixed(3)}%</span>)</li>
+                            <li><b>24h volume</b>${(ticker.sbd_volume / 1000).toFixed(4)}</li>
+                            <li><b>Bid</b>${parseFloat(ticker.highest_bid).toFixed(6)}</li>
+                            <li><b>Ask</b>${parseFloat(ticker.lowest_ask).toFixed(6)}</li>
+                            <li><b>Spread</b>{(100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2)}%</li>
+
+                        </ul> : null}
+                    </div>
                 </div>
 
-                <div className="col-xs-12">
 
-                    {priceTop ? priceChart :
-                        <DepthChart data={{asks, bids}} />
-                    }
+                <div className="row">
+                    <div className="col-xs-12">
+
+                        {priceTop ? priceChart :
+                            <DepthChart data={{asks, bids}} />
+                        }
+                    </div>
                 </div>
 
-                <div className="col-xs-6 col-lg-4">
-                    <Orderbook orders={bids} buy />
+                <div className="row">
+                    <div className="col-xs-6 col-lg-4">
+                        <Orderbook orders={bids} buy />
+                    </div>
+
+                    <div className="col-xs-6 col-lg-4">
+                        <Orderbook orders={asks} sell />
+                    </div>
+
+                    <div className="col-xs-12 col-lg-4">
+
+                        <table className="table table-condensed trade-history">
+                            <caption>Order history</caption>
+                            <thead>
+                                <tr>
+                                    <th style={{textAlign: "center"}}>Date</th>
+                                    <th style={{textAlign: "right"}}>Price</th>
+                                    <th style={{textAlign: "right"}}>Steem</th>
+                                    <th style={{textAlign: "right"}}>SD ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {this.renderHistoryRows(history)}
+                            </tbody>
+                        </table>
+
+                        <nav>
+                          <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
+                            <li className={"previous" + (historyIndex === 0 ? " disabled" : "")}>
+                                <a onClick={this._setHistoryPage.bind(this, false)} aria-label="Previous">
+                                    <span aria-hidden="true">&larr; Newer</span>
+                                </a>
+                            </li>
+                            <li className={"next" + (historyIndex >= (history.length - 10) ? " disabled" : "")}>
+                                <a onClick={this._setHistoryPage.bind(this, true)} aria-label="Previous">
+                                    <span aria-hidden="true">Older &rarr;</span>
+                                </a>
+                            </li>
+                          </ul>
+                        </nav>
+                    </div>
                 </div>
-
-                <div className="col-xs-6 col-lg-4">
-                    <Orderbook orders={asks} sell />
-                </div>
-
-                <div className="col-xs-12 col-lg-4">
-
-                    <table className="table table-condensed trade-history">
-                        <caption>Order history</caption>
-                        <thead>
-                            <tr>
-                                <th style={{textAlign: "center"}}>Date</th>
-                                <th style={{textAlign: "right"}}>Price</th>
-                                <th style={{textAlign: "right"}}>Steem</th>
-                                <th style={{textAlign: "right"}}>SD ($)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                {this.renderHistoryRows(history)}
-                        </tbody>
-                    </table>
-
-                    <nav>
-                      <ul className="pager" style={{marginTop: 0, marginBottom: 0}}>
-                        <li className={"previous" + (historyIndex === 0 ? " disabled" : "")}>
-                            <a onClick={this._setHistoryPage.bind(this, false)} aria-label="Previous">
-                                <span aria-hidden="true">&larr; Newer</span>
-                            </a>
-                        </li>
-                        <li className={"next" + (historyIndex >= (history.length - 10) ? " disabled" : "")}>
-                            <a onClick={this._setHistoryPage.bind(this, true)} aria-label="Previous">
-                                <span aria-hidden="true">Older &rarr;</span>
-                            </a>
-                        </li>
-                      </ul>
-                    </nav>
-                </div>
-
-                <div className="col-xs-12" style={{paddingTop: 20, paddingBottom: 20}}>
-                    {!priceTop ? priceChart :
-                        <DepthChart data={{asks, bids}} />
-                    }
+                <div className="row">
+                    <div className="col-xs-12" style={{paddingTop: 20, paddingBottom: 20}}>
+                        {!priceTop ? priceChart :
+                            <DepthChart data={{asks, bids}} />
+                        }
+                    </div>
                 </div>
             </div>
 
