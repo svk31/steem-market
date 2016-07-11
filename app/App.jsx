@@ -37,7 +37,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        var socket = socketIO.connect(config.host);
+        var socket = socketIO.connect(config.host, {secure: config.secure});
 
         socket.on("connect", (res) => {
             console.log("connected");

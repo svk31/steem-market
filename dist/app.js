@@ -28795,7 +28795,7 @@
 	        value: function componentDidMount() {
 	            var _this2 = this;
 
-	            var socket = socketIO.connect(_config2.default.host);
+	            var socket = socketIO.connect(_config2.default.host, { secure: _config2.default.secure });
 
 	            socket.on("connect", function (res) {
 	                console.log("connected");
@@ -30497,6 +30497,7 @@
 
 	module.exports = {
 	    port: 3000,
+	    secure: false,
 	    wsApi: "ws://127.0.0.1:8090",
 	    apis: ["database_api", "market_history_api"],
 	    pollFrequency: 1500,
