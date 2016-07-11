@@ -2,4 +2,5 @@ node_modules
 config.js
 build
 dist
+dist/app.js
 npm-debug.log
