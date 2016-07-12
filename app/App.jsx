@@ -1,5 +1,4 @@
 var React = require("react");
-var ReactDOM = require("react-dom");
 var socketIO = require('socket.io-client')
 import {Order, MarketHistory, TradeHistory} from "./marketUtils";
 import DepthChart from "./DepthChart.jsx";
@@ -9,31 +8,92 @@ import moment from "moment";
 import Highcharts from "highcharts/highstock";
 import Orderbook from "./Orderbook/Orderbook.jsx";
 
-require("./app.scss");
+// Grab the state from a global injected into server-generated HTML
 
-Highcharts.setOptions({
-    global: {
-        useUTC: false
+var initialState;
+if (typeof window !== "undefined") initialState = window.__INITIAL_STATE__;
+
+if ("setOptions" in Highcharts) {
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+}
+
+function sortByPrice(inverse, a, b) {
+    if (inverse) {
+        return b.price - a.price;
     }
-});
+    return a.price - b.price;
+};
+
+function sumByPrice(orders) {
+    return orders.reduce((previous, current) => {
+        if (!previous.length) {
+            previous.push(current);
+        } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
+            previous[previous.length - 1] = previous[previous.length - 1].add(current);
+        } else {
+            previous.push(current);
+        }
+
+        return previous;
+    }, [])
+}
+
+function parseOrderbook(data) {
+    let bids = data.bids.map(bid => {
+        return new Order(bid, "bid");
+    }).sort(sortByPrice.bind(this, true));
+
+    let asks = data.asks.map(ask => {
+        return new Order(ask, "ask");
+    }).sort(sortByPrice.bind(this, false));
+
+    return {
+        asks, bids
+    };
+}
+
+function parsePriceHistory(data) {
+    return data.map(bucket => {
+        return new MarketHistory(bucket);
+    });
+}
+
+function parseHistory(data) {
+    let history =  data.map(fill => {
+        return new TradeHistory(fill);
+    })
+
+    return history.sort((a, b) => {
+        return (b.date === a.date ? (a.getSBDAmount() - b.getSBDAmount()) : (b.date - a.date));
+    });
+}
 
 class App extends React.Component {
 
-    constructor() {
+    constructor(props, context) {
         super();
 
+        let {bids, asks} = parseOrderbook((context && context.data) ? context.data.orderbook : initialState.orderbook);
+        let priceHistory = parsePriceHistory((context && context.data) ? context.data.markethistory : initialState.markethistory);
+        let history = parseHistory((context && context.data) ? context.data.tradehistory : initialState.tradehistory);
+        let ticker = (context && context.data) ? context.data.ticker : initialState.ticker;
         this.state = {
             apiReady: false,
-            asks: [],
-            bids: [],
-            history: [],
-            ticker: {},
-            priceHistory: [],
+            asks: asks,
+            bids: bids,
+            history: history,
+            ticker: ticker,
+            priceHistory: priceHistory,
             priceTop: true,
             historyIndex: 0,
             buyIndex: 0,
             sellIndex: 0
         };
+
     }
 
     componentDidMount() {
@@ -48,55 +108,24 @@ class App extends React.Component {
         })
 
         socket.on('markethistory', (data) => {
-            this.setState({priceHistory: data.map(bucket => {
-                return new MarketHistory(bucket);
-            })});
+            this.setState({priceHistory: parsePriceHistory(data)});
         })
 
         socket.on('orderbook', (data) => {
-            console.log("# of bids:", data.bids.length, "# of asks:", data.asks.length);
-            let bids = data.bids.map(bid => {
-                return new Order(bid, "bid");
-            }).sort(sortByPrice.bind(this, true));
-
-            let asks = data.asks.map(ask => {
-                return new Order(ask, "ask");
-            }).sort(sortByPrice.bind(this, false));
+            let {bids, asks} = parseOrderbook(data);
 
             this.setState({
                 bids: sumByPrice(bids), asks: sumByPrice(asks)
             });
 
-            function sortByPrice(inverse, a, b) {
-                if (inverse) {
-                    return b.price - a.price;
-                }
-                return a.price - b.price;
-            };
 
-            function sumByPrice(orders) {
-                return orders.reduce((previous, current) => {
-                    if (!previous.length) {
-                        previous.push(current);
-                    } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
-                        previous[previous.length - 1] = previous[previous.length - 1].add(current);
-                    } else {
-                        previous.push(current);
-                    }
-
-                    return previous;
-                }, [])
-            }
         });
 
         socket.on('tradehistory', (data) => {
-            let history =  data.map(fill => {
-                return new TradeHistory(fill);
-            })
 
-            this.setState({history: history.sort((a, b) => {
-                return (b.date === a.date ? (a.getSBDAmount() - b.getSBDAmount()) : (b.date - a.date));
-            })});
+            let history = parseHistory(data);
+
+            this.setState({history});
         });
     }
 
@@ -238,5 +267,8 @@ class App extends React.Component {
     }
 }
 
+App.contextTypes = {
+    data: React.PropTypes.object
+};
 
-ReactDOM.render(<App />, document.getElementById("content"));
+module.exports = App;

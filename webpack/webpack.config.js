@@ -6,17 +6,20 @@ var webpack = require("webpack");
 var root_dir = path.resolve(__dirname, "..");
 
 // CSS LOADERS
-var cssLoaders = "style-loader!css-loader!postcss-loader",
-  scssLoaders = "style!css!postcss-loader!sass?outputStyle=expanded";
+var scssLoaders = ExtractTextPlugin.extract(["css", "postcss-loader", "sass"]);
 
-function extractForProduction(loaders) {
-    return ExtractTextPlugin.extract("style", loaders.substr(loaders.indexOf("!")));
-}
+// function extractForProduction(loaders) {
+//     console.log("extractForProduction", loaders.split("!"));
+//     return ExtractTextPlugin.extract(loaders.split("!"));
+// }
+//
+// scssLoaders = extractForProduction(scssLoaders);
 
 module.exports = function(options) {
     var plugins = [
         new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin()
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new ExtractTextPlugin("app.css")
     ];
 
     if (options.prod) {
@@ -39,6 +42,7 @@ module.exports = function(options) {
         entry: "./Main.js",
         output: {
             path: root_dir + (options.prod ? "/build" : "/dist"),
+            publicPath: '/build/',
             filename: "app.js"
         },
         module: {
@@ -54,7 +58,6 @@ module.exports = function(options) {
                     loader: "babel-loader",
                     query: {compact: false, cacheDirectory: true}
                 },
-                { test: /\.css$/, loader: cssLoaders },
                 {
                     test: /\.scss$/,
                     loader: scssLoaders

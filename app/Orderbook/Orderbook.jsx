@@ -151,7 +151,7 @@ export default class Orderbook extends React.Component {
                 total += order.getSBDAmount();
 
                 return (
-                    <OrderRow animate={this.state.animate} key={order.getPrice()} index={index} order={order} total={total} buy={buy} />
+                    <OrderRow animate={this.state.animate} key={index} index={index} order={order} total={total} buy={buy} />
                 );
             }
         }).filter(a => {

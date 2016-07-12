@@ -14,6 +14,9 @@ import utils from "./utils";
 
 (function(H) {
     'use strict';
+    if(!H || !H.Chart){
+      return;
+    }
     var merge = H.merge;
 
     H.wrap(H.Chart.prototype, 'init', function(proceed) {
