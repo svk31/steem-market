@@ -34,7 +34,7 @@ class OrderRow extends React.Component {
             // }
 
             if (nextProps.order.getSBDAmount() !== this.props.order.getSBDAmount()) {
-                console.log("Row #", this.props.index, "SBD amount changed from", this.props.order.getSBDAmount(), "to", nextProps.order.getSBDAmount());
+                // console.log("Row #", this.props.index, "SBD amount changed from", this.props.order.getSBDAmount(), "to", nextProps.order.getSBDAmount());
                 this.setState({animate: true}, this.clearAnimate);
             }
         }
@@ -68,7 +68,7 @@ class OrderRow extends React.Component {
         let price = order.getStringPrice();
 
         return (
-            <tr className={this.state.animate ? "Animate" : ""}>
+            <tr className={this.state.animate ? "animate" : ""}>
                 <td style={{textAlign: "right"}}>{buy ? total.toFixed(2) : price}</td>
                 <td style={{textAlign: "right"}}>{buy ? sbd : steem}</td>
                 <td style={{textAlign: "right"}}>{buy ? steem : sbd}</td>
