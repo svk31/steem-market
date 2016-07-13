@@ -6,10 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon --harmony index.js",
-    "start": "webpack --progress --config webpack/webpack-prod.js && node index.js",
+    "prod": "webpack --progress --config webpack/webpack-prod.js && node index.js",
     "dev": "webpack --progress --config webpack/webpack-dev.js && node index.js",
+    "start": "forever start index.js -o ./output.log",
     "prebuild": "rm -rf ./build/*",
-    "build": "webpack --config webpack/webpack-prod.js",
+    "build": "webpack --progress --config webpack/webpack-prod.js",
     "postbuild": "rm -rf ./dist/*; cp -r ./build/* ./dist/"
   },
   "author": "Sigve Kvalsvik <bitsharesblocks@gmail.com>",
