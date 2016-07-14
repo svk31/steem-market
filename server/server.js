@@ -1,4 +1,3 @@
-var steemWS = require("steem-rpc");
 var deepEqual = require("deep-equal");
 var config = require("../config");
 import zlib from 'zlib'
@@ -21,43 +20,9 @@ import { renderToString } from 'react-dom/server'
 import { match, RouterContext } from 'react-router'
 import routes from '../app/routes.js';
 import DataWrapper from "./DataWrapper";
+import {write, renderFullPage} from "./utils.js";
 
 console.log("*** Server listening at port:", config.port, "***");
-
-function renderFullPage(html, data) {
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        <title>Steemex</title>
-        <meta name="description" content="Follow and trade on the Steem internal market for STEEM vs Steem Dollars" />
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(data)};
-        </script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"  />
-        <link rel="stylesheet" href="app.css"  />
-      </head>
-      <body>
-        <div id="content">${html}</div>
-        <script src="app.js" charset="utf-8"></script>
-        <script src="highcharts.js" charset="utf-8"></script>
-      </body>
-    </html>
-    `
-}
-
-function write(string, type, res) {
-  zlib.gzip(string, (err, result) => {
-    res.writeHead(200, {
-      'Content-Length': result.length,
-      'Content-Type': type,
-      'Content-Encoding': 'gzip'
-    })
-    res.write(result)
-    res.end()
-  });
-}
-
 
 function startServer() {
     app.use((req, res) => {
@@ -70,7 +35,7 @@ function startServer() {
           res.redirect(302, redirectLocation.pathname + redirectLocation.search)
       } else if (req.url.indexOf("app.") >= 0 || req.url.indexOf("highcharts") >= 0) {
         //   res.sendFile(__dirname + "/dist" + req.url);
-            fs.readFile(path.resolve(__dirname, "../build/", `.${req.url}`), (err, data) => {
+            fs.readFile(path.resolve(__dirname, "../dist/", `.${req.url}`), (err, data) => {
                 let type = req.url.indexOf(".js") >= 0 ? "javascript" : "css";
                 write(data, `text/${type}`, res)
             })
@@ -104,15 +69,7 @@ function startServer() {
     });
 }
 
-const options = {
-    // user: "username",
-    // pass: "password",
-    url: config.wsApi,
-    apis: config.apis
-};
-
-var Api = steemWS(options);
-var apiCalls = ApiCalls(Api);
+var apiCalls = ApiCalls();
 var currentBlock;
 
 var marketCache = {
@@ -122,7 +79,7 @@ var marketCache = {
     markethistory: []
 }
 
-Api.get().initPromise.then((res) => {
+apiCalls.init().then((res) => {
     console.log("Api ready, connected to:", res, "\n");
     updateState();
     startServer();

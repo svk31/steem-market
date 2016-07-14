@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon --harmony index.js",
     "prod": "webpack --progress --config webpack/webpack-prod.js && node index.js",
-    "dev": "webpack --progress --config webpack/webpack-dev.js && node index.js",
+    "dev-build": "webpack --progress --config webpack/webpack-dev.js --watch",
     "start": "forever start index.js -o ./output.log",
     "prebuild": "rm -rf ./build/*",
     "build": "webpack --progress --config webpack/webpack-prod.js",

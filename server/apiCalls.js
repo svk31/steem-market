@@ -1,5 +1,21 @@
-module.exports = function (Api) {
+var steemWS = require("steem-rpc");
+var config = require("../config");
+
+module.exports = function () {
+    const options = {
+        // user: "username",
+        // pass: "password",
+        url: config.wsApi,
+        apis: config.apis
+    };
+
+    var Api = steemWS(options);
+
     return {
+        init() {
+            return Api.get().initPromise;
+        },
+
         getDynamicGlobal: function() {
             return Api.get().database_api().exec("get_dynamic_global_properties", []);
         },
