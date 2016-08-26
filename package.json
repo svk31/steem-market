@@ -25,9 +25,10 @@
     "react": "^15.2.0",
     "react-dom": "^15.2.0",
     "react-highcharts": "^8.4.1",
+    "react-router": "^2.6.0",
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8",
-    "steem-rpc": "^0.3.0",
+    "steem-rpc": "^0.6.5",
     "universal-router": "^1.2.2"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-register": "^6.9.0",
     "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "node-sass": "^3.8.0",
     "nodemon": "^1.9.2",

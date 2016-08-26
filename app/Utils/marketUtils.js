@@ -116,8 +116,73 @@ class MarketHistory {
     }
 }
 
+function sortByPrice(inverse, a, b) {
+    if (inverse) {
+        return b.price - a.price;
+    }
+    return a.price - b.price;
+};
+
+function sumByPrice(orders) {
+    return orders.reduce((previous, current) => {
+        if (!previous.length) {
+            previous.push(current);
+        } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
+            previous[previous.length - 1] = previous[previous.length - 1].add(current);
+        } else {
+            previous.push(current);
+        }
+
+        return previous;
+    }, [])
+}
+
+function parseOrderbook(data) {
+    let bids = data.bids.map(bid => {
+        return new Order(bid, "bid");
+    }).sort(sortByPrice.bind(this, true));
+
+    let asks = data.asks.map(ask => {
+        return new Order(ask, "ask");
+    }).sort(sortByPrice.bind(this, false));
+
+    return {
+        asks, bids
+    };
+}
+
+function parsePriceHistory(data) {
+    let previousBucket;
+    return data.map(bucket => {
+        if (previousBucket) {
+            // console.log("previousBucket:", previousBucket);
+        }
+        previousBucket = bucket;
+        let history = new MarketHistory(bucket);
+        if (history.high == 6) {
+            console.log("6 bucket:", bucket);
+        }
+        return history;
+    });
+}
+
+function parseHistory(data) {
+    let history =  data.map(fill => {
+        return new TradeHistory(fill);
+    })
+
+    return history.sort((a, b) => {
+        return (b.date === a.date ? (a.getSBDAmount() - b.getSBDAmount()) : (b.date - a.date));
+    });
+}
+
 module.exports = {
     Order,
     MarketHistory,
-    TradeHistory
+    TradeHistory,
+    parseOrderbook,
+    sortByPrice,
+    sumByPrice,
+    parsePriceHistory,
+    parseHistory
 };

@@ -1,6 +1,7 @@
 var React = require("react");
 var socketIO = require('socket.io-client')
-import {Order, MarketHistory, TradeHistory} from "./marketUtils";
+import {Order, MarketHistory, TradeHistory, sumByPrice, sortByPrice,
+    parseOrderbook, parseHistory, parsePriceHistory} from "./Utils/marketUtils";
 import DepthChart from "./DepthChart.jsx";
 import PriceChart from "./PriceChart.jsx";
 import config from "../config";
@@ -18,57 +19,6 @@ if ("setOptions" in Highcharts) {
         global: {
             useUTC: false
         }
-    });
-}
-
-function sortByPrice(inverse, a, b) {
-    if (inverse) {
-        return b.price - a.price;
-    }
-    return a.price - b.price;
-};
-
-function sumByPrice(orders) {
-    return orders.reduce((previous, current) => {
-        if (!previous.length) {
-            previous.push(current);
-        } else if (previous[previous.length - 1].getStringPrice() === current.getStringPrice()) {
-            previous[previous.length - 1] = previous[previous.length - 1].add(current);
-        } else {
-            previous.push(current);
-        }
-
-        return previous;
-    }, [])
-}
-
-function parseOrderbook(data) {
-    let bids = data.bids.map(bid => {
-        return new Order(bid, "bid");
-    }).sort(sortByPrice.bind(this, true));
-
-    let asks = data.asks.map(ask => {
-        return new Order(ask, "ask");
-    }).sort(sortByPrice.bind(this, false));
-
-    return {
-        asks, bids
-    };
-}
-
-function parsePriceHistory(data) {
-    return data.map(bucket => {
-        return new MarketHistory(bucket);
-    });
-}
-
-function parseHistory(data) {
-    let history =  data.map(fill => {
-        return new TradeHistory(fill);
-    })
-
-    return history.sort((a, b) => {
-        return (b.date === a.date ? (a.getSBDAmount() - b.getSBDAmount()) : (b.date - a.date));
     });
 }
 
@@ -193,7 +143,7 @@ class App extends React.Component {
                         {Object.keys(ticker).length ?
                         <ul className="market-ticker">
                             <li><b>Last price</b>${latest}/STEEM (<span className={changePercent === 0 ? "" : changePercent < 0 ? "negative" : "positive"}>{changePercent.toFixed(3)}%</span>)</li>
-                            <li><b>24h volume</b>${(ticker.sbd_volume / 1000).toFixed(4)}</li>
+                            <li><b>24h volume</b>${(parseFloat(ticker.sbd_volume.split(" ")[0])).toFixed(4)}</li>
                             <li><b>Bid</b>${parseFloat(ticker.highest_bid).toFixed(6)}</li>
                             <li><b>Ask</b>${parseFloat(ticker.lowest_ask).toFixed(6)}</li>
                             <li><b>Spread</b>{(100 * (parseFloat(ticker.lowest_ask) - parseFloat(ticker.highest_bid)) / parseFloat(ticker.highest_bid)).toFixed(2)}%</li>
